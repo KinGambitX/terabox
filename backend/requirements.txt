@@ -1,0 +1,10 @@
+numpy
+scikit-learn
+huggingface_hub
+pypdf
+python-docx
+tree-sitter-language-pack
+groq
+langchain
+langchain-groq
+langchain-huggingface
