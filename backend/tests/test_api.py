@@ -1,10 +1,16 @@
 from fastapi.testclient import TestClient
+import mongomock
 
 from main import create_app
+from repository import Repository
 from settings import Settings
 
 
 API_KEY = "test-api-key-which-is-long-enough"
+
+
+def make_test_repository(settings):
+    return Repository(settings.mongodb_uri, settings.mongodb_database, client=mongomock.MongoClient())
 
 
 def make_client(tmp_path):
@@ -12,12 +18,13 @@ def make_client(tmp_path):
         app_env="test",
         api_key=API_KEY,
         cors_origins=("http://localhost:3000",),
-        db_path=tmp_path / "test.sqlite3",
+        mongodb_uri="mongodb://unit.test",
+        mongodb_database="terabox_test",
         upload_dir=tmp_path / "uploads",
         max_upload_size_mb=1,
         max_text_chars=100_000,
     )
-    return TestClient(create_app(settings)), {"X-API-Key": API_KEY}
+    return TestClient(create_app(settings, repository=make_test_repository(settings))), {"X-API-Key": API_KEY}
 
 
 def test_health_ready_auth_and_submission_analysis_routes(tmp_path):
@@ -88,6 +95,47 @@ def test_upload_validation_and_code_comparison(tmp_path):
         assert result["evidence"]["score"] > 0.5
 
 
+def test_embedding_failure_keeps_lexical_report_available(tmp_path, monkeypatch):
+    import pipeline
+
+    settings = Settings(
+        app_env="test", api_key=API_KEY, mongodb_uri="mongodb://unit.test",
+        mongodb_database="terabox_test", upload_dir=tmp_path / "uploads",
+        enable_semantic=True, allow_external_ai=True, hf_token="fake-token",
+    )
+    def fail_embed(*_):
+        raise RuntimeError("provider unavailable")
+
+    monkeypatch.setattr(pipeline, "embed_text", fail_embed)
+    client = TestClient(create_app(settings, repository=make_test_repository(settings)))
+    auth = {"X-API-Key": API_KEY}
+    text = b"A sufficiently descriptive academic passage about energy storage, electrical grids, and renewable power. " * 5
+    with client:
+        first = client.post("/api/v1/submissions", headers=auth, files={"file": ("first.txt", text)})
+        second = client.post("/api/v1/submissions", headers=auth, files={"file": ("second.txt", text)})
+        assert first.status_code == second.status_code == 200
+        result = second.json()["results"][0]
+        assert result["method"] == "tfidf_cosine"
+        assert result["score"] > 0.9
+
+
+def test_local_embeddings_do_not_require_external_ai(monkeypatch):
+    import numpy as np
+    import semantic
+
+    class FakeModel:
+        def encode(self, text, **kwargs):
+            assert text == "local test"
+            assert kwargs["normalize_embeddings"] is True
+            return np.array([1.0, 0.0, 0.0, 0.0])
+
+    monkeypatch.setattr(semantic, "_model", lambda name: FakeModel())
+    settings = Settings(enable_semantic=True, embedding_dimensions=4)
+    vector, model = semantic.embed_text("local test", settings)
+    assert vector == [1.0, 0.0, 0.0, 0.0]
+    assert model == settings.hf_embedding_model
+
+
 def test_authentication_and_filter_validation(tmp_path):
     client, auth = make_client(tmp_path)
     with client:
@@ -101,7 +149,7 @@ def test_external_provider_routes_with_fakes(tmp_path, monkeypatch):
     import pipeline
 
     settings = Settings(
-        app_env="test", api_key=API_KEY, db_path=tmp_path / "test.sqlite3",
+        app_env="test", api_key=API_KEY, mongodb_uri="mongodb://unit.test", mongodb_database="terabox_test",
         upload_dir=tmp_path / "uploads", enable_semantic=True, allow_external_ai=True,
         hf_token="fake-token", vector_store="qdrant", allow_external_search=True,
         web_search_provider="tavily", tavily_api_key="fake-key",
@@ -127,7 +175,7 @@ def test_external_provider_routes_with_fakes(tmp_path, monkeypatch):
         "provider_score": 0.8,
     }])
 
-    client = TestClient(create_app(settings))
+    client = TestClient(create_app(settings, repository=make_test_repository(settings)))
     auth = {"X-API-Key": API_KEY}
     with client:
         uploaded = client.post("/api/v1/submissions", headers=auth,
@@ -155,9 +203,9 @@ def test_pydantic_agent_invokes_scoped_tool_with_test_model(tmp_path):
     from tools.context import AgentDependencies
     from pydantic_ai.models.test import TestModel
 
-    settings = Settings(app_env="test", api_key=API_KEY, db_path=tmp_path / "agent.sqlite3",
+    settings = Settings(app_env="test", api_key=API_KEY, mongodb_uri="mongodb://unit.test", mongodb_database="terabox_test",
                         upload_dir=tmp_path / "uploads")
-    repository = Repository(settings.db_path)
+    repository = make_test_repository(settings)
     repository.initialize()
     repository.add_submission({
         "id": "submission-a", "filename": "essay.txt", "content_type": "document",
@@ -177,7 +225,7 @@ def test_agent_route_with_stubbed_model_run(tmp_path, monkeypatch):
     from types import SimpleNamespace
     from agents.academic_integrity import AgentReport
 
-    settings = Settings(app_env="test", api_key=API_KEY, db_path=tmp_path / "agent-route.sqlite3",
+    settings = Settings(app_env="test", api_key=API_KEY, mongodb_uri="mongodb://unit.test", mongodb_database="terabox_test",
                         upload_dir=tmp_path / "uploads", allow_external_ai=True, groq_api_key="fake-key")
 
     class StubAgent:
@@ -194,7 +242,7 @@ def test_agent_route_with_stubbed_model_run(tmp_path, monkeypatch):
             ), usage=SimpleNamespace(requests=2, tool_calls=1))
 
     monkeypatch.setattr(academic_agent, "build_agent", lambda config: StubAgent())
-    client = TestClient(create_app(settings))
+    client = TestClient(create_app(settings, repository=make_test_repository(settings)))
     auth = {"X-API-Key": API_KEY}
     with client:
         uploaded = client.post("/api/v1/submissions", headers=auth,

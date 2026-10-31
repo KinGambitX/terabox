@@ -42,7 +42,7 @@ class AgentRequest(BaseModel):
 def create_app(settings: Settings | None = None, repository: Repository | None = None) -> FastAPI:
     config = settings or get_settings()
     config.validate()
-    repo = repository or Repository(config.db_path)
+    repo = repository or Repository(config.mongodb_uri, config.mongodb_database)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
@@ -208,7 +208,7 @@ def create_app(settings: Settings | None = None, repository: Repository | None =
 
     @app.post("/api/v1/vectors/search", tags=["vectors"], dependencies=[Depends(require_api_key)])
     def vector_search(body: VectorSearchRequest):
-        if not config.enable_semantic or not config.allow_external_ai:
+        if not config.enable_semantic:
             raise HTTPException(status_code=503, detail="Semantic embedding is disabled")
         try:
             vector, model = embed_text(body.text, config)

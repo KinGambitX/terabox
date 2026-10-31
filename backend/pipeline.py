@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 import json
+import logging
 import uuid
 
 from code_similarity import compare_code
@@ -13,6 +14,9 @@ from settings import Settings
 from similarity import compare_text
 from vector_store import create_vector_store
 from web_search import search_candidates
+
+
+logger = logging.getLogger("terabox.pipeline")
 
 
 class AnalysisPipeline:
@@ -30,11 +34,14 @@ class AnalysisPipeline:
         output: list[dict] = []
         vector = None
         model = None
-        if self.settings.enable_semantic and self.settings.allow_external_ai and current["content_type"] == "document":
-            vector, model = embed_text(current["extracted_text"], self.settings)
-            self.repository.save_embedding(submission_id, vector, model)
-            output.extend(self._semantic_results(current, comparables, vector, model))
-            self._persist_vector(submission_id, current, vector, model)
+        if self.settings.enable_semantic and current["content_type"] == "document":
+            try:
+                vector, model = embed_text(current["extracted_text"], self.settings)
+                self.repository.save_embedding(submission_id, vector, model)
+                output.extend(self._semantic_results(current, comparables, vector, model))
+                self._persist_vector(submission_id, current, vector, model)
+            except Exception:
+                logger.exception("Semantic analysis unavailable for %s; continuing with lexical analysis", submission_id)
         for source in comparables:
             if current["content_type"] == "document":
                 result = compare_text(current["extracted_text"], source["extracted_text"])

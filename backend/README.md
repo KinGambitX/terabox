@@ -3,9 +3,8 @@
 Authenticated FastAPI service for document and source-code similarity review.
 It stores source files and metadata locally, extracts supported formats,
 compares each new submission with prior submissions of the same type, and
-returns evidence and method-specific scores. Hugging Face, Groq, web search,
-and vector persistence are optional integrations and are disabled unless
-explicitly configured.
+returns evidence and method-specific scores. Hugging Face embeddings run locally
+when enabled. Groq, web search, and vector persistence are optional integrations.
 
 ## Local setup
 
@@ -25,9 +24,10 @@ placeholder; production startup rejects it. Start the service with:
 ```
 
 Interactive docs are at `http://127.0.0.1:8000/docs` outside production. Send
-the key in the `X-API-Key` header. The default store is local SQLite plus local
-file storage under `backend/data/`. The checked-in environment example selects
-Qdrant; start its local container before using vector retrieval:
+the key in the `X-API-Key` header. MongoDB Atlas stores submission and review
+records. Set `MONGODB_URI` in `.env` before starting the backend. Original files
+remain in `backend/data/uploads/`. The environment example selects Qdrant; start
+its local container before using vector retrieval:
 
 ```bash
 docker compose up -d qdrant
@@ -67,25 +67,29 @@ embedded text layer return a clear extraction error; OCR is not bundled.
 
 ## Environment
 
-Copy `.env.example` to `.env`. Local `.env` is ignored by Git. In deployed
-environments, inject secrets through the platform's secret manager instead.
+Copy `.env.example` to `.env`, set `MONGODB_URI` to the Atlas connection string,
+and set `MONGODB_DATABASE` to the application database name. Local `.env` is
+ignored by Git. In deployed environments, inject secrets through the
+platform's secret manager instead.
 
 - `API_KEY` protects all data routes. Keep it on a trusted server; do not ship
   it to browser JavaScript. The Next.js server should call this API.
 - `APP_ENV=production` requires a unique API key of at least 32 characters and
   rejects wildcard CORS. Set `CORS_ORIGINS` to trusted origins.
-- `DB_PATH`, `UPLOAD_DIR`, `MAX_UPLOAD_SIZE_MB`, and `MAX_TEXT_CHARS` configure
-  local persistence and input limits. Use persistent encrypted storage and a
-  reverse proxy request-size limit when deploying.
-- Semantic inference runs only when both `ENABLE_SEMANTIC=true` and
-  `ALLOW_EXTERNAL_AI=true`; provide `HF_TOKEN`, `HF_EMBEDDING_MODEL`, and the
-  model's exact `EMBEDDING_DIMENSIONS`.
+- `MONGODB_URI` and `MONGODB_DATABASE` configure MongoDB Atlas. `UPLOAD_DIR`,
+  `MAX_UPLOAD_SIZE_MB`, and `MAX_TEXT_CHARS` configure local file storage and
+  input limits. Use a persistent object store for uploads when deploying.
+- Semantic embeddings run locally when `ENABLE_SEMANTIC=true`; the model weights
+  download from Hugging Face on first use. `HF_TOKEN` is optional for model
+  downloads and does not enable paid hosted inference. Set the model name and its
+  exact `EMBEDDING_DIMENSIONS`. Local embedding calls do not send submission text
+  to Hugging Face.
 - Groq explanations require `ALLOW_EXTERNAL_AI=true` and `GROQ_API_KEY`.
 - The PydanticAI agent uses `AGENT_MODEL`, `AGENT_TIMEOUT_SECONDS`, and
   `AGENT_MAX_TOOL_CALLS`. The default model is Groq's current GPT-OSS 120B
   tool-calling model; the `/agent/run` route requires `GROQ_API_KEY` and
   `ALLOW_EXTERNAL_AI=true` because its prompt may include returned evidence.
-  Semantic embeddings additionally require `ENABLE_SEMANTIC=true` and `HF_TOKEN`.
+  Semantic embeddings are computed locally and only require `ENABLE_SEMANTIC=true`.
 - Qdrant is the only supported vector database. `VECTOR_STORE=qdrant` enables
   it; set `VECTOR_STORE=none` to disable vector persistence. Configure it with
   `QDRANT_URL`, optional `QDRANT_API_KEY`, and `QDRANT_COLLECTION`.
@@ -98,17 +102,17 @@ environments, inject secrets through the platform's secret manager instead.
 
 Lexical document similarity uses TF-IDF cosine similarity and returns matched
 passage excerpts. Code similarity compares normalized token sequences and
-returns token ranges. Hosted semantic similarity stores model-specific vectors
-and calculates cosine similarity. Scores are method-specific review signals,
-not probabilities or misconduct decisions. Review states are stored separately
-from machine evidence.
+returns token ranges. Local Hugging Face semantic embeddings store
+model-specific vectors in Qdrant and calculate cosine similarity. Scores are
+method-specific review signals, not probabilities or misconduct decisions.
+Review states are stored separately from machine evidence.
 
-This backend currently uses SQLite and local file storage by default. A single
-instance with persistent disk is appropriate for development and a small
-prototype; multi-instance production should move metadata/files to shared,
-managed services and add a job queue, per-user authorization, backups, malware
-scanning, retention policy, and monitoring. API-key authentication is intended
-for trusted server-to-server access, not direct public browser access.
+MongoDB Atlas stores application metadata; Qdrant stores semantic vectors.
+Original uploads still use local file storage and need a persistent AWS object
+store before containers can be replaced or scaled across instances. Also add
+per-user authorization, backups, malware scanning, retention policy, and
+monitoring. API-key authentication is intended for trusted server-to-server
+access, not direct public browser access.
 Agent tools live in `tools/`. They can inspect one active submission, run
 deterministic analysis, query Qdrant, and search web candidates only when the
 reviewer explicitly requests it. They cannot alter review status. Agent
@@ -123,5 +127,6 @@ Run route and pipeline tests without provider credentials:
 .venv/bin/pytest -q
 ```
 
-External-provider success paths are exercised with fakes. Live Hugging Face,
-Groq, Tavily, or Qdrant credentials/services are not needed by tests.
+Repository tests use an in-memory MongoDB mock. External-provider success paths
+are exercised with fakes. Live Atlas, Groq, Tavily, or Qdrant
+credentials/services are not needed by tests.

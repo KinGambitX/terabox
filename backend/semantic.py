@@ -1,31 +1,32 @@
-"""Optional hosted Hugging Face embeddings, disabled unless explicitly enabled."""
+"""Local Hugging Face sentence embeddings for semantic similarity."""
 
 from __future__ import annotations
 
+from functools import lru_cache
+
 import numpy as np
-from huggingface_hub import InferenceClient
+from sentence_transformers import SentenceTransformer
 
 from settings import Settings
 
 
+@lru_cache(maxsize=2)
+def _model(model_name: str) -> SentenceTransformer:
+    return SentenceTransformer(model_name, device="cpu")
+
+
 def embed_text(text: str, settings: Settings) -> tuple[list[float], str]:
-    if not settings.enable_semantic or not settings.allow_external_ai:
-        raise RuntimeError("Enable ENABLE_SEMANTIC and ALLOW_EXTERNAL_AI to call Hugging Face")
-    if not settings.hf_token:
-        raise RuntimeError("HF_TOKEN is required for hosted embeddings")
-    result = InferenceClient(model=settings.hf_embedding_model, token=settings.hf_token).feature_extraction(text)
-    array = np.asarray(result, dtype=float)
-    if array.ndim == 1:
-        pooled = array
-    elif array.ndim == 2:
-        pooled = array[0] if array.shape[0] == 1 else array.mean(axis=0)
-    else:
-        pooled = array.reshape(-1, array.shape[-1]).mean(axis=0)
-    if pooled.size != settings.embedding_dimensions:
+    if not settings.enable_semantic:
+        raise RuntimeError("Set ENABLE_SEMANTIC=true to run local embeddings")
+    vector = _model(settings.hf_embedding_model).encode(
+        text, convert_to_numpy=True, normalize_embeddings=True,
+    )
+    vector = np.asarray(vector, dtype=np.float32).reshape(-1)
+    if vector.size != settings.embedding_dimensions:
         raise ValueError(
-            f"Model returned {pooled.size} dimensions; EMBEDDING_DIMENSIONS is {settings.embedding_dimensions}"
+            f"Model returned {vector.size} dimensions; EMBEDDING_DIMENSIONS is {settings.embedding_dimensions}"
         )
-    return pooled.tolist(), settings.hf_embedding_model
+    return vector.tolist(), settings.hf_embedding_model
 
 
 def cosine_score(left: list[float], right: list[float]) -> float:

@@ -25,8 +25,9 @@ class Settings:
     app_env: str = "development"
     api_key: str = "dev-key-change-this"
     cors_origins: tuple[str, ...] = ("http://localhost:3000",)
-    db_path: Path = ROOT / "data" / "terabox.sqlite3"
     upload_dir: Path = ROOT / "data" / "uploads"
+    mongodb_uri: str | None = None
+    mongodb_database: str = "terabox"
     max_upload_size_mb: int = 20
     max_text_chars: int = 2_000_000
     hf_token: str | None = None
@@ -57,8 +58,9 @@ class Settings:
                 app_env=os.getenv("APP_ENV", "development").strip().lower(),
                 api_key=os.getenv("API_KEY", "dev-key-change-this"),
                 cors_origins=cors,
-                db_path=Path(os.getenv("DB_PATH", str(ROOT / "data" / "terabox.sqlite3"))).expanduser(),
                 upload_dir=Path(os.getenv("UPLOAD_DIR", str(ROOT / "data" / "uploads"))).expanduser(),
+                mongodb_uri=os.getenv("MONGODB_URI") or None,
+                mongodb_database=os.getenv("MONGODB_DATABASE", "terabox"),
                 max_upload_size_mb=int(os.getenv("MAX_UPLOAD_SIZE_MB", "20")),
                 max_text_chars=int(os.getenv("MAX_TEXT_CHARS", "2000000")),
                 hf_token=os.getenv("HF_TOKEN") or None,
@@ -101,8 +103,6 @@ class Settings:
             raise ValueError("WEB_SEARCH_PROVIDER must be none or tavily")
         if self.web_search_provider == "tavily" and not self.tavily_api_key:
             raise ValueError("TAVILY_API_KEY is required when WEB_SEARCH_PROVIDER=tavily")
-        if self.enable_semantic and self.allow_external_ai and not self.hf_token:
-            raise ValueError("HF_TOKEN is required when ENABLE_SEMANTIC=true")
         if self.app_env == "production":
             if len(self.api_key) < 32 or self.api_key == "dev-key-change-this":
                 raise ValueError("Production requires a unique API_KEY of at least 32 characters")

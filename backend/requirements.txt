@@ -5,7 +5,9 @@ httpx==0.28.1
 numpy==2.5.4
 scikit-learn==1.9.1
 huggingface_hub==1.33.0
+sentence-transformers==6.2.0
 python-dotenv==1.2.4
+pymongo[srv]==4.19.0
 qdrant-client==1.20.0
 pypdf==6.21.4
 python-docx==1.2.0
@@ -13,3 +15,4 @@ tree-sitter-language-pack==1.22.1
 groq==0.37.1
 pydantic-ai-slim[groq]==2.61.0
 pytest==9.2.0
+mongomock==4.3.0

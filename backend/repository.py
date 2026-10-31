@@ -1,157 +1,123 @@
-"""SQLite persistence for development/small deployments; portable to Postgres later."""
+"""MongoDB persistence for submissions and similarity review records."""
 
 from __future__ import annotations
 
 import json
-from pathlib import Path
-import sqlite3
 from typing import Any
-from contextlib import contextmanager
+
+from pymongo import ASCENDING, DESCENDING, MongoClient
 
 
 class Repository:
-    def __init__(self, path: Path):
-        self.path = Path(path)
-
-    @contextmanager
-    def connect(self):
-        db = sqlite3.connect(self.path, timeout=20)
-        db.row_factory = sqlite3.Row
-        db.execute("PRAGMA foreign_keys = ON")
-        db.execute("PRAGMA journal_mode = WAL")
-        try:
-            yield db
-            db.commit()
-        except Exception:
-            db.rollback()
-            raise
-        finally:
-            db.close()
+    def __init__(self, uri: str, database: str, *, client=None):
+        self._owns_client = client is None
+        self.client = client if client is not None else (
+            MongoClient(uri, serverSelectionTimeoutMS=5000, connectTimeoutMS=5000) if uri else None
+        )
+        self.database = self.client[database] if self.client is not None else None
+        self.submissions = self.database["submissions"] if self.database is not None else None
+        self.results = self.database["results"] if self.database is not None else None
 
     def initialize(self) -> None:
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self.connect() as db:
-            db.executescript("""
-                CREATE TABLE IF NOT EXISTS submissions (
-                    id TEXT PRIMARY KEY,
-                    filename TEXT NOT NULL,
-                    content_type TEXT NOT NULL,
-                    language TEXT,
-                    extracted_text TEXT NOT NULL,
-                    file_path TEXT NOT NULL,
-                    embedding_json TEXT,
-                    embedding_model TEXT,
-                    created_at TEXT NOT NULL
-                );
-                CREATE TABLE IF NOT EXISTS results (
-                    id TEXT PRIMARY KEY,
-                    submission_id TEXT NOT NULL,
-                    source_id TEXT NOT NULL,
-                    source_type TEXT NOT NULL,
-                    method TEXT NOT NULL,
-                    score REAL NOT NULL,
-                    evidence_json TEXT NOT NULL,
-                    review_status TEXT NOT NULL DEFAULT 'pending',
-                    review_note TEXT,
-                    explanation TEXT,
-                    explanation_model TEXT,
-                    created_at TEXT NOT NULL,
-                    UNIQUE(submission_id, source_id, source_type, method)
-                );
-                CREATE INDEX IF NOT EXISTS idx_results_submission ON results(submission_id);
-                CREATE INDEX IF NOT EXISTS idx_submissions_content_type ON submissions(content_type);
-            """)
+        if self.client is None:
+            raise RuntimeError("MONGODB_URI is required; add the MongoDB Atlas URI to backend/.env")
+        if self._owns_client:
+            self.client.admin.command("ping")
+        self.submissions.create_index([("id", ASCENDING)], unique=True)
+        self.submissions.create_index([("content_type", ASCENDING), ("created_at", DESCENDING)])
+        self.results.create_index([("id", ASCENDING)], unique=True)
+        self.results.create_index(
+            [("submission_id", ASCENDING), ("source_id", ASCENDING),
+             ("source_type", ASCENDING), ("method", ASCENDING)], unique=True,
+        )
+        self.results.create_index([("submission_id", ASCENDING), ("score", DESCENDING)])
+
+    @staticmethod
+    def _without_mongo_id(row: dict[str, Any] | None) -> dict[str, Any] | None:
+        if row is not None:
+            row.pop("_id", None)
+        return row
 
     def add_submission(self, row: dict[str, Any]) -> None:
-        with self.connect() as db:
-            db.execute("""INSERT INTO submissions
-                (id, filename, content_type, language, extracted_text, file_path, created_at)
-                VALUES (:id, :filename, :content_type, :language, :extracted_text, :file_path, :created_at)""", row)
+        self.submissions.insert_one({**row, "embedding": None, "embedding_model": None})
 
     def list_submissions(self, *, content_type: str | None = None) -> list[dict[str, Any]]:
-        query = "SELECT id, filename, content_type, language, created_at FROM submissions"
-        args: tuple = ()
-        if content_type:
-            query += " WHERE content_type = ?"
-            args = (content_type,)
-        query += " ORDER BY created_at DESC"
-        with self.connect() as db:
-            return [dict(row) for row in db.execute(query, args).fetchall()]
+        query = {"content_type": content_type} if content_type else {}
+        cursor = self.submissions.find(
+            query,
+            {"_id": 0, "id": 1, "filename": 1, "content_type": 1,
+             "language": 1, "created_at": 1},
+        ).sort("created_at", DESCENDING)
+        return list(cursor)
 
     def get_submission(self, submission_id: str) -> dict[str, Any] | None:
-        with self.connect() as db:
-            row = db.execute("SELECT * FROM submissions WHERE id = ?", (submission_id,)).fetchone()
-            if row is None:
-                return None
-            result = dict(row)
-        result["embedding"] = json.loads(result["embedding_json"]) if result["embedding_json"] else None
-        result.pop("embedding_json")
-        return result
+        return self._without_mongo_id(self.submissions.find_one({"id": submission_id}))
 
     def comparable_submissions(self, submission_id: str, content_type: str) -> list[dict[str, Any]]:
-        with self.connect() as db:
-            rows = db.execute(
-                "SELECT * FROM submissions WHERE id != ? AND content_type = ? ORDER BY created_at DESC",
-                (submission_id, content_type),
-            ).fetchall()
-            results = [dict(row) for row in rows]
-        for row in results:
-            row["embedding"] = json.loads(row["embedding_json"]) if row["embedding_json"] else None
-            row.pop("embedding_json")
-        return results
+        rows = self.submissions.find(
+            {"id": {"$ne": submission_id}, "content_type": content_type},
+        ).sort("created_at", DESCENDING)
+        return [self._without_mongo_id(row) for row in rows]
 
     def save_embedding(self, submission_id: str, embedding: list[float], model: str) -> None:
-        with self.connect() as db:
-            db.execute("UPDATE submissions SET embedding_json = ?, embedding_model = ? WHERE id = ?",
-                       (json.dumps(embedding), model, submission_id))
+        self.submissions.update_one(
+            {"id": submission_id}, {"$set": {"embedding": embedding, "embedding_model": model}},
+        )
 
     def save_results(self, rows: list[dict[str, Any]]) -> None:
-        if not rows:
-            return
-        with self.connect() as db:
-            db.executemany("""INSERT INTO results
-                (id, submission_id, source_id, source_type, method, score, evidence_json, created_at)
-                VALUES (:id, :submission_id, :source_id, :source_type, :method, :score, :evidence_json, :created_at)
-                ON CONFLICT(submission_id, source_id, source_type, method) DO UPDATE SET
-                    score = excluded.score, evidence_json = excluded.evidence_json, created_at = excluded.created_at""", rows)
+        for row in rows:
+            identity = {
+                "submission_id": row["submission_id"], "source_id": row["source_id"],
+                "source_type": row["source_type"], "method": row["method"],
+            }
+            self.results.update_one(identity, {
+                "$set": {
+                    "score": row["score"], "evidence": json.loads(row["evidence_json"]),
+                    "created_at": row["created_at"],
+                },
+                "$setOnInsert": {
+                    "id": row["id"], **identity, "review_status": "pending",
+                    "review_note": None, "explanation": None, "explanation_model": None,
+                },
+            }, upsert=True)
 
     def list_results(self, *, submission_id: str | None = None) -> list[dict[str, Any]]:
-        query = "SELECT * FROM results"
-        args: tuple = ()
-        if submission_id:
-            query += " WHERE submission_id = ?"
-            args = (submission_id,)
-        query += " ORDER BY score DESC, created_at DESC"
-        with self.connect() as db:
-            rows = [dict(row) for row in db.execute(query, args).fetchall()]
+        query = {"submission_id": submission_id} if submission_id else {}
+        rows = self.results.find(query).sort([("score", DESCENDING), ("created_at", DESCENDING)])
         return [self._decode_result(row) for row in rows]
 
     def get_result(self, result_id: str) -> dict[str, Any] | None:
-        with self.connect() as db:
-            row = db.execute("SELECT * FROM results WHERE id = ?", (result_id,)).fetchone()
-        return self._decode_result(dict(row)) if row else None
+        row = self.results.find_one({"id": result_id})
+        return self._decode_result(row) if row else None
 
-    @staticmethod
-    def _decode_result(row: dict[str, Any]) -> dict[str, Any]:
-        row["evidence"] = json.loads(row.pop("evidence_json"))
-        return row
+    @classmethod
+    def _decode_result(cls, row: dict[str, Any]) -> dict[str, Any]:
+        result = cls._without_mongo_id(row)
+        if "evidence_json" in result:
+            result["evidence"] = json.loads(result.pop("evidence_json"))
+        return result
 
     def review_result(self, result_id: str, status: str, note: str | None) -> dict[str, Any] | None:
-        with self.connect() as db:
-            changed = db.execute("UPDATE results SET review_status = ?, review_note = ? WHERE id = ?",
-                                 (status, note, result_id)).rowcount
-        return self.get_result(result_id) if changed else None
+        changed = self.results.update_one(
+            {"id": result_id}, {"$set": {"review_status": status, "review_note": note}},
+        )
+        return self.get_result(result_id) if changed.matched_count else None
 
     def save_explanation(self, result_id: str, explanation: str, model: str) -> None:
-        with self.connect() as db:
-            db.execute("UPDATE results SET explanation = ?, explanation_model = ? WHERE id = ?",
-                       (explanation, model, result_id))
+        self.results.update_one(
+            {"id": result_id}, {"$set": {"explanation": explanation, "explanation_model": model}},
+        )
 
     def delete_submission(self, submission_id: str) -> dict[str, Any] | None:
         row = self.get_submission(submission_id)
         if row is None:
             return None
-        with self.connect() as db:
-            db.execute("DELETE FROM results WHERE submission_id = ? OR source_id = ?", (submission_id, submission_id))
-            db.execute("DELETE FROM submissions WHERE id = ?", (submission_id,))
+        self.results.delete_many({"$or": [
+            {"submission_id": submission_id}, {"source_id": submission_id},
+        ]})
+        self.submissions.delete_one({"id": submission_id})
         return row
+
+    def close(self) -> None:
+        if self.client is not None:
+            self.client.close()
