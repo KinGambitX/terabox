@@ -7,8 +7,9 @@ FINAL PROJECT REPORT
 B.Tech. — 3rd Semester | Academic Year 2026–27
 
 
+SOURCELENS
 AI-POWERED DOCUMENT AND SOURCE-CODE
-PLAGIARISM DETECTION PLATFORM
+SIMILARITY REVIEW PLATFORM
 (Software-Based Academic Integrity Review System)
 
 
@@ -31,7 +32,7 @@ Arpit Thakur
 October 2026
 
 DECLARATION
-The project report titled “AI-Powered Document and Source-Code Plagiarism Detection Platform” has been prepared for the Engineering Clinics course in the B.Tech. third semester. The report documents the proposed software architecture, methodology, design decisions, evaluation plan and expected outcomes for document and source-code similarity analysis against submitted work and discoverable web sources.
+The project report titled “SourceLens: AI-Powered Document and Source-Code Similarity Review Platform” has been prepared for the Engineering Clinics course in the B.Tech. third semester. The report documents the implemented software architecture, methodology, design decisions, evaluation plan and observed prototype checks for document and source-code similarity analysis against submitted work and discoverable web sources.
 The report distinguishes design targets from measured results. Performance values described as targets are not presented as completed experimental findings. Any implementation status, test evidence, or approval required by the institution should be verified by the project team and faculty before formal submission.
 Student
 Roll number
@@ -79,7 +80,7 @@ Literature Review / Existing System
 
 
 6
-Proposed System / Methodology
+System / Methodology
 
 
 7
@@ -133,7 +134,9 @@ PROJECT PARTICULARS
 Item
 Details
 Project title
-AI-Powered Document and Source-Code Plagiarism Detection Platform
+SourceLens: AI-Powered Document and Source-Code Similarity Review Platform
+App name
+SourceLens
 Short description
 AI-based document and source-code similarity review system
 Institution
@@ -146,8 +149,8 @@ Team members
 Aryan — 2510002271; Ashutosh Maurya — 2510002072; Arpit Thakur — 2510002252
 Project mentors
 Mr. Ankur Srivastava, Associate Professor; Ms. Deepshikha, Associate Professor
-System style
-Web platform + Node.js API + Python analysis service + Hugging Face embeddings + optional LangChain orchestration and Groq explanations
+Implemented system
+Next.js web frontend + FastAPI backend + MongoDB Atlas metadata/results/reviews + Qdrant vector store + local Hugging Face sentence-transformers embeddings + PydanticAI review coordinator + optional Groq explanations (gated by ALLOW_EXTERNAL_AI)
 Estimated software cost
 To be determined from selected hosting, search API and model plans; local/open-source options may reduce cost
 Important boundary
@@ -155,7 +158,7 @@ Outputs are review indicators only; the system does not independently determine 
 
 
 1. ABSTRACT
-The project, “AI-Powered Document and Source-Code Plagiarism Detection Platform,” proposes a software-only system that helps authorised reviewers find potentially reused material in documents and source code. Users submit supported files, which are extracted, normalised and compared with other submissions in the institution’s collection. A web-source workflow can search for relevant public pages and compare retrieved content, subject to the chosen search provider, access rules and licensing. Lexical comparison uses TF-IDF and cosine similarity; semantic comparison uses sentence embeddings from a Hugging Face model; and code comparison uses normalised tokens and structural fingerprints. A Next.js dashboard and Node.js API coordinate with a Python analysis service, while MongoDB Atlas stores submission metadata, comparison results and reviewer decisions. Groq may be used to generate concise explanations of already identified matches, but it does not determine similarity or make misconduct decisions. The system presents matched passages, source links, method-specific scores and limitations for human review. Precision, recall and F1-score are proposed evaluation measures; no results are claimed until testing is completed.
+The project, “SourceLens: AI-Powered Document and Source-Code Similarity Review Platform,” is a software system that helps authorised reviewers find potentially reused material in documents and source code. Users submit supported files, which are extracted, normalised and compared with other submissions in the institution’s collection. A web-source workflow can search for relevant public pages and compare retrieved content, subject to the configured search provider, access rules and licensing. Lexical comparison uses TF-IDF and cosine similarity; semantic comparison uses locally computed sentence embeddings from a Hugging Face model; and code comparison uses normalised tokens. The Next.js frontend calls an authenticated FastAPI backend. MongoDB Atlas stores submission metadata, comparison results and reviewer decisions, while Qdrant stores semantic vectors. A PydanticAI review coordinator can use scoped tools to inspect submissions, run deterministic comparisons, search Qdrant and request public-source candidates. Groq explanations are optional and gated by ALLOW_EXTERNAL_AI; neither the agent nor the model determines similarity or misconduct. The system presents matched passages, source links, method-specific scores and limitations for human review. Prototype checks are recorded separately from formal accuracy evaluation.
 
 2. INTRODUCTION
 Academic integrity matters to credible learning and assessment. Digital submissions make it easy to copy, share and transform text or code. Exact phrase matching can identify verbatim overlap, while paraphrasing, translation, reordered passages, formatting changes and renamed code identifiers can make manual review harder. Instructors also need to compare work against both the institution’s own submissions and relevant public web material.
@@ -199,7 +202,7 @@ A production-grade institution-wide deployment before security, privacy and perf
 Unverified accuracy, latency, search coverage or user-study results.
 
 4.3 Assumptions and constraints
-The prototype assumes a development computer, network access, supported input files and access to a search provider if web comparison is enabled. Hugging Face embeddings may run locally or through an approved hosted endpoint; model selection, hardware needs, usage limits and licensing must be recorded. Groq access depends on an available model/API plan and should be optional. Search results vary by provider and time, and retrieved pages may be incomplete or unavailable. Similarity thresholds require calibration on representative labelled data.
+The prototype assumes a development computer, network access, supported input files and access to a search provider if web comparison is enabled. Hugging Face sentence-transformers embeddings currently run locally on CPU; model selection, hardware needs and licensing must be recorded. Hosted Hugging Face inference previously returned HTTP 402 due to exhausted credits, so submission text is not sent to that endpoint. Groq access is optional and gated by ALLOW_EXTERNAL_AI. Search results vary by provider and time, and retrieved pages may be incomplete or unavailable. Similarity thresholds require calibration on representative labelled data.
 
 5. LITERATURE REVIEW / EXISTING SYSTEM
 Plagiarism detection combines methods with different strengths. TF-IDF and cosine similarity provide an inexpensive lexical baseline and can help locate repeated wording, but they are sensitive to changed phrasing. Sentence embeddings represent semantic content and can identify related passages with different wording; general semantic similarity is not by itself evidence of copying. Source-code systems such as JPlag compare program tokens and help detect transformed code. Search engines can surface public candidate sources, but their indexes are incomplete and do not grant permission to retrieve or reuse page content. Language models can summarize provided evidence, but their generated text needs verification.
@@ -212,12 +215,12 @@ Web search provider | Finds candidate public pages | Index coverage, rate limits
 Groq language model | Can summarize evidence for a reviewer | Can hallucinate or overstate conclusions | Optional grounded explanation, separate from score
 
 5.1 Research gap
-Many tools focus on only one comparison source or one content type. This project’s proposed contribution is a shared review workflow for documents and code that combines institutional submissions with candidate public web sources, preserves method-specific evidence, and optionally explains matches. The value and accuracy of this workflow must be established through evaluation; no completed validation is claimed.
+Many tools focus on only one comparison source or one content type. This project’s contribution is a shared review workflow for documents and code that combines institutional submissions with candidate public web sources, preserves method-specific evidence, and optionally explains matches. The value and accuracy of this workflow must be established through evaluation; formal accuracy validation remains pending.
 
-6. PROPOSED SYSTEM / METHODOLOGY
-The software is organised into a web interface, application API, analysis service, search integration, data store and reviewer workflow. Users upload documents or code. The API validates file type and size, assigns an identifier and queues analysis. The Python service extracts and normalises content, compares it with eligible stored submissions, and calculates lexical, semantic or code similarity. For web comparison, a search provider returns candidate URLs; accessible page content is retrieved within provider and site rules, then compared with the submission. The dashboard displays evidence and lets an authorised reviewer record a decision. Groq is an optional explanation step that receives only selected excerpts and computed evidence where permitted.
+6. SYSTEM / METHODOLOGY
+The software is organised as a Next.js web frontend and a FastAPI backend, with MongoDB Atlas for submission, result and review records and Qdrant for semantic vectors. The backend validates uploads, extracts and normalises content, compares eligible submissions, and calculates lexical, semantic or code similarity. Sentence-transformers embeddings are computed locally. For web comparison, the configured search integration returns candidate URLs; accessible page content is retrieved within provider and site rules, then compared with the submission. A PydanticAI review coordinator can invoke scoped tools for submission inspection, deterministic comparison, Qdrant retrieval and public-source candidate search. The dashboard displays evidence and lets an authorised reviewer record a decision. Optional Groq explanations are gated by ALLOW_EXTERNAL_AI and cannot alter computed scores or reviewer decisions.
 
-Figure 1. Proposed software architecture: web application, API, analysis service, search provider, database and reviewer.
+Figure 1. Software architecture: Next.js frontend, FastAPI backend, search integration, MongoDB Atlas, Qdrant and reviewer.
 
 6.1 Processing stages
 Intake: accept supported document and code files, validate size/type, and record uploader and submission metadata.
@@ -226,7 +229,7 @@ Preprocessing: normalize Unicode and whitespace, segment text into passages, and
 Internal comparison: compare eligible submissions using lexical and semantic document methods or code-token methods.
 Web comparison: search for candidate public pages, retrieve permitted content, retain source URLs and retrieval timestamps, and compare the extracted content.
 Review: show scores, matched spans, method/model versions and source provenance; mark every result as a review indicator.
-Optional explanation: ask Groq to summarize supplied evidence only; keep its response distinct from algorithmic scores and allow reviewers to ignore it.
+Optional explanation: when ALLOW_EXTERNAL_AI permits it, ask Groq to summarize supplied evidence only; keep its response distinct from algorithmic scores and allow reviewers to ignore it.
 Reporting: export selected evidence and reviewer status with a methodology and coverage note.
 
 Figure 2. Submission-to-review workflow for internal and public-web comparisons.
@@ -253,7 +256,7 @@ provider / retrieved_at | Provenance for public web results
 created_at / review_status | Analysis timestamp and reviewer-managed status
 
 6.4 Optional explanation generation
-Groq may receive a prompt containing the computed score, method name and limited matched excerpts to produce a short explanation of why a reviewer may want to inspect the pair. The model must not invent citations, infer intent, declare a student guilty or change the underlying score. The UI labels this output as AI-generated, includes the excerpts that support it, and permits disabling the feature. Sensitive submissions should not be sent to a third-party model without an approved data-handling basis; local-only or no-explanation operation remains available.
+The PydanticAI review coordinator provides scoped tools for evidence inspection and deterministic workflows; it does not make review decisions. Optional Groq explanation calls are gated by ALLOW_EXTERNAL_AI and may receive only approved evidence excerpts. The model must not invent citations, infer intent, declare a student guilty or change the underlying score. The UI labels generated text as AI-generated and keeps it separate from computed evidence. Sensitive submissions should not be sent to a third-party model without an approved data-handling basis; the feature can remain disabled.
 
 6.5 Result review and provenance
 Each comparison must identify what was compared, which method produced the score, which model or configuration was used, and what exact excerpt supports the match. Reviewers can mark a result pending, reviewed, relevant or dismissed, while original machine outputs remain unchanged. A web match includes its source URL and retrieval date; if content could not be retrieved, the UI must not imply that it was fully checked.
@@ -264,30 +267,31 @@ Figure 4. Evidence record with method-specific result, matched excerpt, source r
 The dashboard supports filtering by submission, comparison type, score range and review status. Selecting a result opens matched passages side by side and, for web results, a source link and retrieval date. PDF reports include the selected evidence, methods, model versions, source provenance, limitations and reviewer status. Interface language should say “similarity detected” or “review suggested,” not “plagiarism confirmed.”
 
 7. TOOLS AND TECHNOLOGIES USED
-Layer | Technology / tool | Role in proposed system
+Layer | Technology / tool | Role in implemented prototype
 Frontend | Next.js, React, TypeScript | Upload flow, dashboard and review pages
-Application API | Node.js | Validation, authentication, job coordination and reports
-AI analysis service | Python, FastAPI | Extraction orchestration and similarity analysis
+Application API and analysis service | Python, FastAPI | Authenticated API, extraction orchestration and similarity analysis
 Lexical comparison | scikit-learn TF-IDF and cosine similarity | Explainable lexical baseline
-Semantic comparison | Hugging Face sentence-transformers model | Embeddings for passage comparison
+Semantic comparison | Local Hugging Face sentence-transformers model | CPU-computed embeddings for passage comparison
 Code comparison | Tokenization, n-grams and optional language parsers | Normalized code overlap analysis
 Web-source discovery | Search provider API or approved search integration | Candidate public pages and source metadata
-Orchestration / explanation | Optional LangChain + Groq API | Coordinates an optional evidence-grounded explanation only
-Database | MongoDB Atlas | Submission metadata, results and review records
+Review coordinator / explanation | PydanticAI; optional Groq API gated by ALLOW_EXTERNAL_AI | Scoped review tools; optional evidence-grounded explanations
+Metadata database | MongoDB Atlas | Submission metadata, results and review records
+Vector database | Qdrant | Semantic vector storage and retrieval
 File storage | Approved local or object storage | Uploaded files and permitted derived artifacts
 Testing | Postman, labelled corpora and evaluation scripts | API and model evaluation
 Reporting / deployment | PDF generation and selected hosting | Export and web application hosting
 
-The listed technologies are proposed choices, not proof that each integration is implemented. The team should record actual library versions, model identifiers, search provider, API routes and deployment configuration before final submission. Cost and rate limits depend on the selected services.
+The technologies above reflect the implemented prototype as recorded in the project progress log. Groq remains optional, and public-web candidate search depends on the configured provider and access. Record actual library versions, model identifiers, search provider, API routes and deployment configuration before final submission. Cost and rate limits depend on selected services.
 
 8. SOFTWARE REQUIREMENTS
 A supported desktop operating system, current browser and network connection.
-Node.js runtime and compatible Next.js/React/TypeScript toolchain.
-Python environment with FastAPI, Uvicorn, document parsers, scikit-learn and the chosen embedding library.
-Hugging Face model files or an approved inference endpoint, with model license and version recorded.
-Optional Groq API access for explanations, with credentials kept server-side and a disable switch; LangChain may be used to orchestrate this optional call.
+Node.js runtime and compatible Next.js/React/TypeScript toolchain for the frontend.
+Python environment with FastAPI, Uvicorn, document parsers, scikit-learn, PydanticAI and sentence-transformers.
+Local Hugging Face sentence-transformers model files, with model license and version recorded.
+MongoDB Atlas for submission/result/review records and Qdrant for vector storage.
+Optional Groq API access for explanations, gated by ALLOW_EXTERNAL_AI and configured server-side.
 A search-provider integration for web candidate discovery; limits and terms documented.
-MongoDB Atlas or an approved database, with restricted credentials and access rules.
+Restricted MongoDB Atlas and Qdrant credentials and access rules.
 Secure file storage, authentication, malware/type validation and retention controls.
 Version control, API testing tools and labelled evaluation datasets.
 
@@ -296,7 +300,7 @@ No physical prototype is required. Software cost depends on hosting, database/fi
 
 9. DESIGN AND IMPLEMENTATION
 9.1 Logical architecture
-The browser submits files to the authenticated application API. The API validates them, stores permitted originals or references, and queues analysis. The Python service extracts and preprocesses content, compares against eligible stored submissions, and requests candidate web sources through the configured search integration. Results are saved with method, source and model provenance. The dashboard retrieves results and supports reviewer annotations. An optional Groq call summarizes selected evidence but cannot alter computed scores or reviewer status.
+The Next.js browser frontend calls authenticated FastAPI routes. The backend validates files, stores submission/result/review metadata in MongoDB Atlas, computes local embeddings and stores semantic vectors in Qdrant. It extracts and preprocesses content, compares eligible submissions, and requests candidate web sources through the configured search integration. Results retain method, source and model provenance. The dashboard retrieves results and supports reviewer annotations. The PydanticAI coordinator can call scoped analysis and retrieval tools. Optional Groq explanations are gated by ALLOW_EXTERNAL_AI and cannot alter computed scores or reviewer status.
 
 Figure 5. Logical deployment view of browser, application API, analysis service, search provider and database.
 
@@ -331,7 +335,7 @@ Log reviewer actions without overwriting original analysis results.
 Respect search-provider terms, website access controls and content licensing; retain source URL and retrieval date.
 
 10. TESTING, RESULTS AND DISCUSSION
-The source material provides no completed test log or measured performance. This section therefore describes the proposed evaluation and leaves results to be filled after testing.
+The progress log records an eight-test backend suite, a clean pip dependency check, a passing authenticated readiness check, and a live smoke comparison using two labeled synthetic documents. These checks demonstrate that selected prototype paths ran; they are not a formal accuracy evaluation. Precision, recall, F1-score, web-search coverage and usability results remain to be measured on a representative labeled dataset.
 
 10.1 Test strategy
 Unit tests: validate extraction, normalization, passage segmentation, similarity calculations, token processing and malformed file handling.
@@ -344,13 +348,15 @@ Security checks: verify unauthorized access denial, upload validation, secret ha
 10.2 Metrics
 Precision, recall and F1-score should be reported for each method and content type using a clearly defined positive label. Report threshold, dataset composition, train/validation/test split and false-positive/false-negative examples. For web sourcing, report search-result retrieval coverage separately from similarity accuracy; public search coverage cannot be assumed complete. Latency and cost per analysis may also be measured. Any target values should be set by the team before testing; none are reported here as achieved.
 
-10.3 Results table to complete after testing
+10.3 Prototype checks and evaluation status
 Module | Metric | Target | Measured result
-Document lexical comparison | Precision / recall / F1 | Set before evaluation | Not supplied; measure during evaluation
-Document semantic comparison | Precision / recall / F1 | Set before evaluation | Not supplied; measure during evaluation
-Code comparison | Precision / recall / F1 | Set before evaluation | Not supplied; measure during evaluation
-Web candidate search | Retrieval coverage / accessible-page rate | Set for chosen provider | Not supplied; measure during evaluation
-Optional explanations | Evidence support review | Define review rubric | Not supplied; measure during evaluation
+Document lexical comparison | Smoke-test score on two labeled synthetic documents | N/A; integration check only | TF-IDF cosine similarity 0.964; not an accuracy metric
+Document semantic comparison | Smoke-test score on two labeled synthetic documents | N/A; integration check only | Local embedding cosine similarity 0.883; not an accuracy metric
+Backend routes and tools | Automated test suite | N/A; implementation checks | 8 tests passed, per progress log
+Dependency consistency | pip check | Clean environment | Passed, per progress log
+Document/code comparison | Precision / recall / F1 | Set before evaluation | Not measured; formal evaluation pending
+Web candidate search | Retrieval coverage / accessible-page rate | Set for chosen provider | Not measured; formal evaluation pending
+Optional explanations | Evidence support review | Define review rubric | Not measured; formal evaluation pending
 
 10.4 Discussion and interpretation
 Lexical methods can flag legitimate common wording, while semantic methods can identify related content that is not copied. Code normalization may miss sophisticated transformations or create false matches if it is too aggressive. Web search is bounded by provider indexes and page accessibility. Groq explanations may be inaccurate even when supplied evidence is correct, so reviewers must verify them against the source passages. The interface should make these limitations visible and allow reviewers to dismiss or annotate results.
@@ -373,7 +379,7 @@ The main challenges are reliable extraction across file formats, balancing lexic
 The project develops experience in NLP, sentence embeddings, source-code analysis, information retrieval, API design, database modelling, secure file handling, dashboard development and evaluation methodology. It emphasizes provenance, reproducibility and careful communication of uncertain AI outputs.
 
 11.3 Conclusion
-The proposed software-only platform compares documents and source code against other submissions and candidate public web sources. It combines lexical, semantic and code-specific methods in an instructor-facing workflow that exposes evidence and provenance. Groq can optionally explain identified matches, while similarity scoring remains based on explicit comparison methods. The system is a review aid, not an automated misconduct judge. Performance claims must wait for measured evaluation.
+SourceLens is a software platform for comparing documents and source code against other submissions and candidate public web sources. It combines lexical, semantic and code-specific methods in an instructor-facing workflow that exposes evidence and provenance. Groq can optionally explain identified matches, while similarity scoring remains based on explicit comparison methods. The system is a review aid, not an automated misconduct judge. Formal performance claims require a representative evaluation; the recorded smoke scores are not accuracy results.
 
 11.4 Future scope
 Evaluate multilingual embedding models and specialized code-similarity or AST-based approaches.
@@ -486,4 +492,4 @@ Unauthorized access | Sensitive submissions disclosed | Authentication, role-bas
 Unverified performance claims | Report overstates project maturity | Report only measured results and retain evaluation evidence
 
 E.1 Final note
-This report describes a proposed software-only document and source-code plagiarism review platform. It includes comparisons across institutional submissions and candidate public web sources, with Hugging Face embeddings for semantic comparison and optional Groq explanations. The source material does not include a completed test log or verified implementation measurements, so no fabricated results or performance claims have been inserted.
+This report documents SourceLens, a software-based document and source-code similarity review platform. The progress log records a working Next.js/FastAPI prototype with MongoDB Atlas, Qdrant, local Hugging Face sentence-transformers embeddings and an optional PydanticAI/Groq workflow. Recorded smoke-test scores and backend checks are implementation evidence, not formal accuracy results. Representative evaluation remains necessary before making performance claims.

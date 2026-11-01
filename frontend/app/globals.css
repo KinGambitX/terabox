@@ -1,26 +1,159 @@
+/* Hallmark · redesign: full · scope: app · v2.0.0 */
+/* Hallmark · critique: keep SourceLens data and wiring; compose a clear light dashboard over the supplied mountain image */
+/* Hallmark · dropped #all-submissions, onClick={() => setSelected(review)}, onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setSelected(review); }} · removed the inert link and replaced row activation with a native Inspect evidence button */
+/* Hallmark · waive 26b · static status summary and charts · workspace summaries are read only */
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  --canvas: #0a0a0a;
+  --surface: #111111;
+  --surface-muted: #171717;
+  --border: #262626;
+  --ink: #f5f5f5;
+  --text: #d4d4d4;
+  --muted: #a3a3a3;
+  --subtle: #737373;
+  --accent-blue: #38bdf8;
+  --accent-green: #4ade80;
+  --accent-amber: #fbbf24;
+  --accent-orange: #fb923c;
+  --accent-violet: #a78bfa;
+  --accent-danger: #fb7185;
+  --brand-button-top: #ffffff;
+  --brand-button-bottom: #ededed;
+  --brand-button-hover: #dcdcdc;
+  --brand-button-ink: #171717;
+  --workspace-paper: #ffffff;
+  --workspace-soft: #f7f8fa;
+  --workspace-ink: #1d2026;
+  --workspace-copy: #4f5662;
+  --workspace-muted: #7c8491;
+  --workspace-border: #e5e8ed;
+  --workspace-hover: #f0f2f5;
+  --workspace-action: #17191d;
+  --workspace-action-hover: #30343b;
+  --workspace-success: #16845b;
+  --workspace-warning: #b45309;
+  --workspace-danger: #c23b57;
+  --workspace-info: #2563eb;
+  --workspace-success-soft: #ecfdf3;
+  --workspace-warning-soft: #fff7ed;
+  --workspace-danger-soft: #fff1f2;
+  --workspace-info-soft: #eff6ff;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
+  --card: #111111;
+  --card-foreground: #f5f5f5;
+  --popover: #171717;
+  --popover-foreground: #f5f5f5;
+  --primary: #f5f5f5;
+  --primary-foreground: #171717;
+  --secondary: #171717;
+  --secondary-foreground: #f5f5f5;
+  --muted-foreground: #a3a3a3;
+  --accent: #1f1f1f;
+  --accent-foreground: #f5f5f5;
+  --destructive: #7f1d1d;
+  --input: #262626;
+  --ring: #0284c7;
+  --chart-1: #0284c7;
+  --chart-2: #a3a3a3;
+  --chart-3: #737373;
+  --chart-4: #525252;
+  --chart-5: #404040;
+  --radius: 0.75rem;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #f5f5f5;
+  --sidebar-primary-foreground: #171717;
+  --sidebar-accent: #1f1f1f;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #262626;
+  --sidebar-ring: #0284c7;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-inter);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-muted);
+  --color-surface-hover: #262626;
+  --color-divider: var(--border);
+  --color-ink: var(--ink);
+  --color-copy: var(--text);
+  --color-muted-text: var(--muted);
+  --color-sky-400: var(--accent-blue);
+  --color-sky-500: #0ea5e9;
+  --color-sky-600: #0284c7;
+  --color-sky-700: #0369a1;
+  --color-sky-800: #075985;
+  --color-sky-900: #0c4a6e;
+  --color-orange-400: var(--accent-orange);
+  --color-violet-400: var(--accent-violet);
+  --color-rose-300: var(--accent-danger);
+  --color-brand-button-top: var(--brand-button-top);
+  --color-brand-button-bottom: var(--brand-button-bottom);
+  --color-brand-button-hover: var(--brand-button-hover);
+  --color-brand-button-ink: var(--brand-button-ink);
+  --color-workspace-paper: var(--workspace-paper);
+  --color-workspace-soft: var(--workspace-soft);
+  --color-workspace-ink: var(--workspace-ink);
+  --color-workspace-copy: var(--workspace-copy);
+  --color-workspace-muted: var(--workspace-muted);
+  --color-workspace-border: var(--workspace-border);
+  --color-workspace-hover: var(--workspace-hover);
+  --color-workspace-action: var(--workspace-action);
+  --color-workspace-action-hover: var(--workspace-action-hover);
+  --color-workspace-success: var(--workspace-success);
+  --color-workspace-warning: var(--workspace-warning);
+  --color-workspace-danger: var(--workspace-danger);
+  --color-workspace-info: var(--workspace-info);
+  --color-workspace-success-soft: var(--workspace-success-soft);
+  --color-workspace-warning-soft: var(--workspace-warning-soft);
+  --color-workspace-danger-soft: var(--workspace-danger-soft);
+  --color-workspace-info-soft: var(--workspace-info-soft);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--surface-muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
 }

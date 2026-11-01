@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" role="img" aria-labelledby="title">
+  <title id="title">Sift, the SourceLens mascot</title>
+  <path d="M12 5.5h14l8.5 8.5v20.5a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V9.5a4 4 0 0 1 4-4Z" fill="#F5F5F5"/>
+  <path d="M26 6v8h8" fill="#D4D4D4"/>
+  <circle cx="16.5" cy="20" r="1.8" fill="#171717"/>
+  <circle cx="24.5" cy="20" r="1.8" fill="#171717"/>
+  <path d="M17 25c1.8 2.2 5.2 2.2 7 0M13.5 31h9" stroke="#171717" stroke-width="1.8" stroke-linecap="round"/>
+  <circle cx="33.5" cy="31.5" r="7.2" fill="#0A0A0A" stroke="#0284C7" stroke-width="2.7"/>
+  <circle cx="33.5" cy="31.5" r="2" fill="#0284C7"/>
+  <path d="m38.5 36.5 4 4" stroke="#0284C7" stroke-width="2.7" stroke-linecap="round"/>
+</svg>
