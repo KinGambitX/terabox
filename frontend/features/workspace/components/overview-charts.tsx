@@ -19,7 +19,7 @@ function statusOption(statuses: StatusCount[], palette: ChartPalette): EChartsOp
     grid: { left: 0, right: 26, top: 2, bottom: 2, containLabel: true },
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" }, valueFormatter: (value) => `${value} submissions` },
     xAxis: { type: "value", min: 0, max: Math.max(1, ...statuses.map(({ count }) => count)), splitLine: { show: false }, axisLabel: { show: false }, axisTick: { show: false }, axisLine: { show: false } },
-    yAxis: { type: "category", data: statuses.map(({ status }) => statusLabel(status)), axisLabel: { color: palette.copy, fontSize: 12, fontFamily: palette.fontFamily }, axisTick: { show: false }, axisLine: { show: false } },
+    yAxis: { type: "category", inverse: true, data: statuses.map(({ status }) => statusLabel(status)), axisLabel: { color: palette.copy, fontSize: 12, fontFamily: palette.fontFamily }, axisTick: { show: false }, axisLine: { show: false } },
     series: [{
       type: "bar",
       data: statuses.map(({ status, count }) => ({ value: count, itemStyle: { color: statusColor[status] } })),

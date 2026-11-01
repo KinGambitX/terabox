@@ -10,6 +10,10 @@ const tone: Record<Review["status"], string> = {
 
 export function ReviewStatusPill({ status, className = "", readable = false }: { status: Review["status"]; className?: string; readable?: boolean }) {
   const size = readable ? "text-[12px]" : "text-[10px]";
-  const statusTone = readable && status === "dismissed" ? tone.dismissed.replace("text-workspace-muted", "text-workspace-copy") : tone[status];
+  const statusTone = readable && status === "dismissed"
+    ? tone.dismissed.replace("text-workspace-muted", "text-workspace-copy")
+    : readable && status === "reviewed"
+      ? tone.reviewed.replace("text-workspace-success", "text-workspace-ink")
+      : tone[status];
   return <span className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-1 ${size} font-medium ${statusTone} ${className}`}>{statusLabel(status)}</span>;
 }

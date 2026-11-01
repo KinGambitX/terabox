@@ -14,7 +14,7 @@ export function OverviewMetrics({ reviews }: { reviews: Review[] }) {
   const sources = reviews.reduce((total, review) => total + review.matches, 0);
 
   return <section className="grid gap-4" aria-label="Workspace metrics">
-    <div className="grid items-start gap-4 lg:grid-cols-2">
+    <div className="grid gap-4 lg:grid-cols-2">
       <article className="rounded-lg border border-workspace-border bg-workspace-paper p-4" aria-labelledby="submission-count-title">
         <div className="mb-3 flex items-baseline justify-between gap-3">
           <h2 id="submission-count-title" className="m-0 text-[13px] font-medium text-workspace-copy">Submissions</h2>

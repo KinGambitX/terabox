@@ -1,0 +1,1602 @@
+{
+ "url": "http://localhost:3002/workspace",
+ "at": "2026-11-01T08:08:42.687Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    1,
+    0.95
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 1368,
+     "screens": 1.5,
+     "words": 296,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 19,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 1,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Review workspace",
+     "words": 2,
+     "chars": 16,
+     "lines": 1,
+     "size": 22,
+     "vw": 1.5,
+     "font": "Inter",
+     "weight": 600,
+     "tracking": -0.03,
+     "leading": 1.25,
+     "top": 106,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Review workspace",
+     "words": 2,
+     "lines": 1,
+     "size": 22,
+     "font": "Inter"
+    },
+    "headings": [
+     {
+      "text": "4",
+      "words": 1,
+      "chars": 1,
+      "lines": 1,
+      "size": 28,
+      "vw": 1.9,
+      "font": "Geist Mono",
+      "weight": 500,
+      "tracking": -0.036,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.01,
+      "top": 331,
+      "tag": "strong",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.98,
+       "mono": false
+      },
+      {
+       "family": "Geist Mono",
+       "share": 0.02,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      10,
+      11,
+      12,
+      13,
+      15,
+      18,
+      19,
+      22,
+      28
+     ],
+     "sizeCount": 9,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 12,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7
+     },
+     "measureChars": 78,
+     "max": {
+      "size": 28,
+      "vw": 1.9,
+      "font": "Geist Mono",
+      "text": "4"
+     },
+     "monoShare": 0.02,
+     "monoProseShare": 0.02,
+     "monoFamilies": [
+      "Geist Mono"
+     ],
+     "monoSamples": [
+      "4",
+      "3",
+      "1",
+      "7",
+      "SL-2408",
+      "SL-2407"
+     ],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.02,
+     "centerShare": 0,
+     "smallText": 39
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0a0a0a",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 0.04
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#ffffff",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4f5662",
+       "share": 0.72
+      },
+      {
+       "color": "#1d2026",
+       "share": 0.13
+      },
+      {
+       "color": "#2563eb",
+       "share": 0.04
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.03
+      },
+      {
+       "color": "#7c8491",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#17191d",
+      "hsl": {
+       "h": 220,
+       "s": 0.12,
+       "l": 0.1
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Workspace",
+       "ratio": 3.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#7c8491",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Submissions stay in your workspace.",
+       "ratio": 3.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#7c8491",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Reviewed",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#16845b",
+       "bg": "#ecfdf3"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 5,
+     "inHero": 5,
+     "radius": 10,
+     "height": 36,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to content",
+      "Overview",
+      "New submission",
+      "Add submission",
+      "Review queue"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 11,
+     "hairlineSamples": [
+      "aside.sticky.top-0 232px",
+      "header.flex.h-[56px] 1208px",
+      "ul.m-0.list-none 534px",
+      "li.grid.min-h-14 534px",
+      "li.grid.min-h-14 534px"
+     ],
+     "outlinedBoxes": 4,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 4,
+     "boxRadius": 12,
+     "squareMedia": 0,
+     "roundedMedia": 1,
+     "mediaRadius": 17,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.12
+     }
+    ],
+    "nav": {
+     "links": 1,
+     "fixed": true,
+     "height": 1368,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "inter",
+     "geist mono"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 1368,
+    "margins": {
+     "left": 50,
+     "right": 45
+    },
+    "sections": [
+     {
+      "sel": "section.relative.mb-5",
+      "tag": "section",
+      "top": 76,
+      "height": 166,
+      "words": 17,
+      "media": 1,
+      "middle": 223,
+      "heading": {
+       "text": "Review workspace",
+       "size": 22,
+       "tag": "h1"
+      },
+      "left": 285,
+      "right": 29,
+      "textLeft": 285,
+      "textRight": 735,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.gap-4",
+      "tag": "div",
+      "top": 314,
+      "height": 983,
+      "words": 164,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Similarity review queue",
+       "size": 19,
+       "tag": "h2"
+      },
+      "left": 260,
+      "right": 28,
+      "textLeft": 260,
+      "textRight": 45,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Review workspace",
+      "size": 22,
+      "top": 106,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 260,
+      "n": 1
+     },
+     {
+      "x": 285,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 12,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0.12,
+    "voidBox": {
+     "x": 0,
+     "y": 240,
+     "w": 240,
+     "h": 660
+    }
+   },
+   "app": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "dark": true,
+    "ground": "#0a0a0a",
+    "sidebar": {
+     "w": 232,
+     "tag": "aside",
+     "links": 5,
+     "share": 0.16
+    },
+    "topbar": {
+     "h": 56
+    },
+    "canvas": {
+     "left": 27,
+     "right": 45
+    },
+    "hero": {
+     "text": "Review workspace",
+     "words": 2,
+     "chars": 16,
+     "lines": 1,
+     "size": 22,
+     "vw": 1.5,
+     "font": "Inter",
+     "weight": 600,
+     "tracking": -0.03,
+     "leading": 1.25,
+     "top": 106,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 1,
+    "layout": {
+     "panels": 6,
+     "firstScreen": 4,
+     "ragged": [
+      {
+       "diff": 44,
+       "top": 314
+      }
+     ],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 7,
+     "radii": [
+      [
+       0,
+       3
+      ],
+      [
+       12,
+       3
+      ],
+      [
+       17,
+       1
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 4,
+     "tabularShare": 1,
+     "kpiMax": 18
+    },
+    "rows": null,
+    "chartHues": 4,
+    "placeholders": [],
+    "type": {
+     "under13": 0.84,
+     "tiny": 3,
+     "tinySamples": [
+      "Workspace 10px",
+      "Private by default 10px",
+      "Submissions stay in your 10px"
+     ],
+     "sizes": [
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      19,
+      22
+     ]
+    },
+    "title": {
+     "text": "Review workspace",
+     "size": 22,
+     "top": 106
+    },
+    "colourShare": 0.023
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    1,
+    0.8
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 1925,
+     "screens": 1.9,
+     "words": 283,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 19,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 1,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Review workspace",
+     "words": 2,
+     "chars": 16,
+     "lines": 1,
+     "size": 22,
+     "vw": 2.9,
+     "font": "Inter",
+     "weight": 600,
+     "tracking": -0.03,
+     "leading": 1.25,
+     "top": 147,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Review workspace",
+     "words": 2,
+     "lines": 1,
+     "size": 22,
+     "font": "Inter"
+    },
+    "headings": [
+     {
+      "text": "4",
+      "words": 1,
+      "chars": 1,
+      "lines": 1,
+      "size": 28,
+      "vw": 3.6,
+      "font": "Geist Mono",
+      "weight": 500,
+      "tracking": -0.036,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.02,
+      "top": 388,
+      "tag": "strong",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.98,
+       "mono": false
+      },
+      {
+       "family": "Geist Mono",
+       "share": 0.02,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      11,
+      12,
+      13,
+      15,
+      18,
+      19,
+      22,
+      28
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 12,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7
+     },
+     "measureChars": 78,
+     "max": {
+      "size": 28,
+      "vw": 3.6,
+      "font": "Geist Mono",
+      "text": "4"
+     },
+     "monoShare": 0.02,
+     "monoProseShare": 0.02,
+     "monoFamilies": [
+      "Geist Mono"
+     ],
+     "monoSamples": [
+      "4",
+      "3",
+      "1",
+      "7",
+      "SL-2408",
+      "SL-2407"
+     ],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.02,
+     "centerShare": 0,
+     "smallText": 36
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0a0a0a",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 0.04
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#ffffff",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4f5662",
+       "share": 0.75
+      },
+      {
+       "color": "#1d2026",
+       "share": 0.12
+      },
+      {
+       "color": "#2563eb",
+       "share": 0.05
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.03
+      },
+      {
+       "color": "#b45309",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#17191d",
+      "hsl": {
+       "h": 220,
+       "s": 0.12,
+       "l": 0.1
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Reviewed",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#16845b",
+       "bg": "#ecfdf3"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 4,
+     "inHero": 4,
+     "radius": 10,
+     "height": 36,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to content",
+      "New submission",
+      "Add submission",
+      "Review queue"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 11,
+     "hairlineSamples": [
+      "aside.sticky.top-0 768px",
+      "header.flex.h-[56px] 768px",
+      "ul.m-0.list-none 702px",
+      "li.grid.min-h-14 702px",
+      "li.grid.min-h-14 702px"
+     ],
+     "outlinedBoxes": 4,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 4,
+     "boxRadius": 12,
+     "squareMedia": 0,
+     "roundedMedia": 1,
+     "mediaRadius": 17,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.12
+     },
+     {
+      "type": "svg",
+      "ratio": 0.1
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": false,
+     "height": 0,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "inter",
+     "geist mono"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 1925,
+    "margins": {
+     "left": 16,
+     "right": 17
+    },
+    "sections": [
+     {
+      "sel": "section.relative.mb-5",
+      "tag": "section",
+      "top": 122,
+      "height": 177,
+      "words": 17,
+      "media": 1,
+      "middle": 36,
+      "heading": {
+       "text": "Review workspace",
+       "size": 22,
+       "tag": "h1"
+      },
+      "left": 41,
+      "right": 17,
+      "textLeft": 41,
+      "textRight": 362,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.gap-4",
+      "tag": "div",
+      "top": 371,
+      "height": 1483,
+      "words": 164,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Submissions",
+       "size": 13,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 28,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Review workspace",
+      "size": 22,
+      "top": 147,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 16,
+      "n": 1
+     },
+     {
+      "x": 41,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 12,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "dark": true,
+    "ground": "#0a0a0a",
+    "sidebar": null,
+    "topbar": {
+     "h": 58
+    },
+    "canvas": {
+     "left": 15,
+     "right": 16
+    },
+    "hero": {
+     "text": "Review workspace",
+     "words": 2,
+     "chars": 16,
+     "lines": 1,
+     "size": 22,
+     "vw": 2.9,
+     "font": "Inter",
+     "weight": 600,
+     "tracking": -0.03,
+     "leading": 1.25,
+     "top": 147,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 1,
+    "layout": {
+     "panels": 5,
+     "firstScreen": 4,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 6,
+     "radii": [
+      [
+       12,
+       3
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       17,
+       1
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 4,
+     "tabularShare": 1,
+     "kpiMax": 18
+    },
+    "rows": null,
+    "chartHues": 4,
+    "placeholders": [],
+    "type": {
+     "under13": 0.84,
+     "tiny": 2,
+     "tinySamples": [
+      "Private by default 10px",
+      "Submissions stay in your 10px"
+     ],
+     "sizes": [
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      19,
+      22
+     ]
+    },
+    "title": {
+     "text": "Review workspace",
+     "size": 22,
+     "top": 147
+    },
+    "colourShare": 0.028
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    1,
+    0.88,
+    0.88
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 2171,
+     "screens": 2.6,
+     "words": 283,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 19,
+     "sections": 3,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Review workspace",
+     "words": 2,
+     "chars": 16,
+     "lines": 1,
+     "size": 20,
+     "vw": 5.1,
+     "font": "Inter",
+     "weight": 600,
+     "tracking": -0.03,
+     "leading": 1.25,
+     "top": 143,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Review workspace",
+     "words": 2,
+     "lines": 1,
+     "size": 20,
+     "font": "Inter"
+    },
+    "headings": [
+     {
+      "text": "4",
+      "words": 1,
+      "chars": 1,
+      "lines": 1,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Geist Mono",
+      "weight": 500,
+      "tracking": -0.036,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": true,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.04,
+      "top": 395,
+      "tag": "strong",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 1,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.98,
+       "mono": false
+      },
+      {
+       "family": "Geist Mono",
+       "share": 0.02,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      11,
+      12,
+      13,
+      15,
+      18,
+      19,
+      20,
+      28
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 12,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7
+     },
+     "measureChars": 61,
+     "max": {
+      "size": 28,
+      "vw": 7.2,
+      "font": "Geist Mono",
+      "text": "4"
+     },
+     "monoShare": 0.02,
+     "monoProseShare": 0.02,
+     "monoFamilies": [
+      "Geist Mono"
+     ],
+     "monoSamples": [
+      "4",
+      "3",
+      "1",
+      "7",
+      "SL-2408",
+      "SL-2407"
+     ],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.02,
+     "centerShare": 0,
+     "smallText": 36
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0a0a0a",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 0.04
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#ffffff",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#4f5662",
+       "share": 0.75
+      },
+      {
+       "color": "#1d2026",
+       "share": 0.12
+      },
+      {
+       "color": "#2563eb",
+       "share": 0.05
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.03
+      },
+      {
+       "color": "#b45309",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#17191d",
+      "hsl": {
+       "h": 220,
+       "s": 0.12,
+       "l": 0.1
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Reviewed",
+       "ratio": 4.4,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#16845b",
+       "bg": "#ecfdf3"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 4,
+     "inHero": 4,
+     "radius": 10,
+     "height": 36,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Skip to content",
+      "New submission",
+      "Add submission",
+      "Review queue"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 11,
+     "hairlineSamples": [
+      "aside.sticky.top-0 390px",
+      "header.flex.h-[56px] 390px",
+      "ul.m-0.list-none 332px",
+      "li.grid.min-h-14 332px",
+      "li.grid.min-h-14 332px"
+     ],
+     "outlinedBoxes": 4,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 4,
+     "boxRadius": 12,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "svg",
+      "ratio": 0.12
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": false,
+     "height": 0,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "inter",
+     "geist mono"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 2171,
+    "margins": {
+     "left": 12,
+     "right": 12
+    },
+    "sections": [
+     {
+      "sel": "section.relative.mb-5",
+      "tag": "section",
+      "top": 122,
+      "height": 166,
+      "words": 17,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Review workspace",
+       "size": 20,
+       "tag": "h1"
+      },
+      "left": 33,
+      "right": 60,
+      "textLeft": 33,
+      "textRight": 60,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.grid.gap-4",
+      "tag": "section",
+      "top": 378,
+      "height": 760,
+      "words": 54,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Submissions",
+       "size": 13,
+       "tag": "h2"
+      },
+      "left": 29,
+      "right": 29,
+      "textLeft": 29,
+      "textRight": 29,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#reviews.min-w-0",
+      "tag": "section",
+      "top": 1154,
+      "height": 921,
+      "words": 110,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Similarity review queue",
+       "size": 19,
+       "tag": "h2"
+      },
+      "left": 12,
+      "right": 12,
+      "textLeft": 12,
+      "textRight": 20,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Review workspace",
+      "size": 20,
+      "top": 143,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [
+     {
+      "text": "Similarity review queue",
+      "side": "left",
+      "px": 12
+     },
+     {
+      "text": "Inspect matched passages and sources. Similarity i",
+      "side": "left",
+      "px": 12
+     },
+     {
+      "text": "Showing",
+      "side": "left",
+      "px": 12
+     },
+     {
+      "text": "SourceLens",
+      "side": "left",
+      "px": 12
+     },
+     {
+      "text": "Similarity evidence for human review.",
+      "side": "left",
+      "px": 12
+     }
+    ],
+    "edges": [
+     {
+      "x": 12,
+      "n": 1
+     },
+     {
+      "x": 33,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 2,
+    "bodySize": 12,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "dark": true,
+    "ground": "#0a0a0a",
+    "sidebar": null,
+    "topbar": {
+     "h": 58
+    },
+    "canvas": {
+     "left": 11,
+     "right": -7
+    },
+    "hero": {
+     "text": "Review workspace",
+     "words": 2,
+     "chars": 16,
+     "lines": 1,
+     "size": 20,
+     "vw": 5.1,
+     "font": "Inter",
+     "weight": 600,
+     "tracking": -0.03,
+     "leading": 1.25,
+     "top": 143,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 1,
+    "layout": {
+     "panels": 5,
+     "firstScreen": 3,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 6,
+     "radii": [
+      [
+       12,
+       3
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       17,
+       1
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 0,
+     "hues": 0,
+     "samples": []
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 4,
+     "tabularShare": 1,
+     "kpiMax": 18
+    },
+    "rows": null,
+    "chartHues": 4,
+    "placeholders": [],
+    "type": {
+     "under13": 0.84,
+     "tiny": 2,
+     "tinySamples": [
+      "Private by default 10px",
+      "Submissions stay in your 10px"
+     ],
+     "sizes": [
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      19,
+      20
+     ]
+    },
+    "title": {
+     "text": "Review workspace",
+     "size": 20,
+     "top": 143
+    },
+    "colourShare": 0.007
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"Workspace\" 3.8:1 needs 4.5:1; \"Submissions stay in your workspace.\" 3.8:1 needs 4.5:1; \"Reviewed\" 4.4:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "tiny-text",
+   "width": 1440,
+   "message": "3 text blocks under 11px: Workspace 10px, Private by default 10px, Submissions stay in your 10px.",
+   "fix": "Nothing below 11px; secondary text 12px, data 13–14px."
+  },
+  {
+   "level": "WARN",
+   "id": "ragged-row",
+   "width": 1440,
+   "message": "1 pair(s) of cards in one row end at different heights (by 44px).",
+   "fix": "Cards that share a row share a bottom edge: balance them by their content (the same number of rows, a block of similar height beside it), or stack them. In testing, ragged rows were marked down every time."
+  },
+  {
+   "level": "WARN",
+   "id": "tiny-text",
+   "width": 768,
+   "message": "84% of the text is under 13px.",
+   "fix": "Data and labels read at 13–14px; keep 11–12px for sublines and axis ticks.",
+   "alsoAt": [
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "edge-text",
+   "width": 390,
+   "message": "5 text block(s) sit 12–15px from the phone's edge: \"Similarity review queue\" (12px); \"Inspect matched passages and s\" (12px); \"Showing\" (12px)",
+   "fix": "The page margin is 16–20px on a phone; the header and the corner labels sit on it too."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/workspaces/terabox/.taste-skill/inspect/desktop-fold.jpg",
+   "pages": [
+    "/workspaces/terabox/.taste-skill/inspect/desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/workspaces/terabox/.taste-skill/inspect/tablet-fold.jpg",
+   "pages": [
+    "/workspaces/terabox/.taste-skill/inspect/tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/workspaces/terabox/.taste-skill/inspect/mobile-fold.jpg",
+   "pages": [
+    "/workspaces/terabox/.taste-skill/inspect/mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}
