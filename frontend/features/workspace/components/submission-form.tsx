@@ -19,7 +19,7 @@ const tabs: Array<{ id: Tab; label: string }> = [
   { id: "code", label: "Source code" },
   { id: "paste", label: "Paste text / link" },
 ];
-const documentAccept = ".pdf,.docx,.txt";
+const documentAccept = ".pdf,.docx,.txt,.md";
 const codeAccept = ".py,.java,.c,.cpp,.js,.ts,.cs,.go";
 const courseOptions = ["Research Methods", "Data Structures", "Environmental Studies", "Database Systems"];
 

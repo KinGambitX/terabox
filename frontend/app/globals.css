@@ -97,6 +97,8 @@
   --color-sky-700: #0369a1;
   --color-sky-800: #075985;
   --color-sky-900: #0c4a6e;
+  --color-review: var(--accent-blue);
+  --color-danger: var(--accent-danger);
   --color-orange-400: var(--accent-orange);
   --color-violet-400: var(--accent-violet);
   --color-rose-300: var(--accent-danger);

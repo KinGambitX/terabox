@@ -19,7 +19,7 @@ export type UploadFileItem = {
 type UploadFields = { title: string; course: string; section: string; notes: string; language: string };
 type UploadOutcome = { file: UploadFileItem; submissionId: string | null; error: string | null };
 
-const docs = new Set(["pdf", "docx", "txt"]);
+const docs = new Set(["pdf", "docx", "txt", "md"]);
 const code = new Set(["py", "java", "c", "cpp", "js", "ts", "cs", "go"]);
 
 function makeKey(file: File, serial: number) {

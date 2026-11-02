@@ -1,0 +1,14 @@
+.source-composer-frame {
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.source-composer-frame:focus-within {
+  border-color: color-mix(in srgb, var(--accent-blue) 55%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-blue) 16%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .source-composer-frame {
+    transition: none;
+  }
+}

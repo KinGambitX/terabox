@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const documentExtensions = ["pdf", "docx", "txt"] as const;
+export const documentExtensions = ["pdf", "docx", "txt", "md"] as const;
 export const codeExtensions = ["py", "java", "c", "cpp", "js", "ts", "cs", "go"] as const;
 export const supportedExtensions = [...documentExtensions, ...codeExtensions] as const;
 
