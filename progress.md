@@ -56,3 +56,13 @@
 - Reshaped workspace metrics into one lead summary and a vertical list of three secondary values. Replaced the hand-built chart with accessible Apache ECharts visualizations derived from example review rows. Removed the “Sample workspace” badge, Academic Integrity switcher, and instructor workspace label.
 - Replaced the generic submission table and recent-activity panel with a single-column evidence queue, working course/status filters, status pills, and a similarity comparison chart. Kept the sample records marked and removed the CRM-style table styling.
 - Added separate Text, Web links, Source code, and Files submission routes, plus a source-library empty state with links into those flows. Forms validate local input and state that the analysis API is not connected, so content is neither sent nor stored.
+
+## Workspace AI composer update — 2026-11-02
+
+- Replaced the `/workspace` dashboard with a full-height SourceLens review conversation and retained the workspace sidebar. Added text, source-code, file, and public-URL input with a dark SourceLens treatment, reduced-motion support, and the existing Tailwind tokens plus a small regular CSS focus treatment.
+- Connected composer submissions to the FastAPI upload and evidence routes. Assistant replies link to saved evidence and report when public web search is unavailable; the UI does not claim to provide AI misconduct decisions.
+- Installed the `@istmx/ui` AI chat block and added its `clsx` / `tailwind-merge` dependencies. The requested Kobra registry components could not be installed: the Kobra registry endpoint failed TLS certificate verification, including with the system CA option. No Kobra components are represented as installed.
+- Fake-data Playwright checks passed for text, source code, a `.txt` attachment, and a public URL against a temporary in-memory `mongomock` backend. Public web search was disabled in the fake backend and the UI reported that limitation. Browser console had no app errors for text, code, or file submissions.
+- Frontend ESLint and `tsc --noEmit` passed. Production `next build --webpack` failed twice with `Could not parse output from TypeScript's --showConfig`, although direct `tsc --showConfig` returned valid JSON.
+- Backend pytest did not complete: the first API test hung on `TestClient` startup and timed out. The isolated local-embeddings test passed. No Atlas data was used in the browser checks.
+- Pushed the implementation as commit `da3b832` on `main`.
