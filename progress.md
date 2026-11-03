@@ -66,3 +66,13 @@
 - Frontend ESLint and `tsc --noEmit` passed. Production `next build --webpack` failed twice with `Could not parse output from TypeScript's --showConfig`, although direct `tsc --showConfig` returned valid JSON.
 - Backend pytest did not complete: the first API test hung on `TestClient` startup and timed out. The isolated local-embeddings test passed. No Atlas data was used in the browser checks.
 - Pushed the implementation as commit `da3b832` on `main`.
+
+## Similarity tools and evidence update — 2026-11-03
+
+- Removed GPTZero from the frontend, backend provider runner, settings, environment example, docs, and tests. Text checks now use Sapling, PlagiarismCheck.org, and Tavily; code checks use the workspace matcher and Dolos.
+- Kept AI-likelihood, plagiarism overlap, and public-source discovery as separate UI signals. Removed provider brand names from the workspace UI; backend logs retain provider IDs for troubleshooting.
+- Fixed Tavily source links to read the response URL from nested evidence and display all returned candidate URLs. Backend logs each returned URL with its match score and passage count.
+- Similarity results now require matched text passages or code token blocks. Embedding results also require cosine similarity of at least `0.72` plus matching passage evidence; negative/weak embedding scores cannot become displayed percentages.
+- Repository result reads discard and remove stale rows with out-of-range scores or no matching evidence. Backend logs similarity result metadata without submitted excerpts.
+- Added per-provider output/error logging, including HTTP status and structured upstream error responses, while redacting long text and excerpts. A PlagiarismCheck HTTP 409 is still unresolved; the provider's public docs do not specify this status for the text submission endpoint. Retry after backend restart and inspect the logged `upstream` response for its specific reason.
+- Verification: 7 focused backend tests pass; Python compile check, frontend TypeScript, and ESLint pass. Full API integration tests were not verified in this environment because the configured Atlas hostname could not resolve; a retry with the Atlas URI unset hung during startup.

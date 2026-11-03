@@ -7,6 +7,15 @@ type Bag = Record<string, unknown>;
 function bag(value: unknown): Bag {
   return value && typeof value === "object" && !Array.isArray(value) ? value as Bag : {};
 }
+function safeSourceUrl(value: unknown) {
+  if (typeof value !== "string") return "";
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.href : "";
+  } catch {
+    return "";
+  }
+}
 function asPercent(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? Math.max(0, Math.min(100, value * 100)) : null;
 }
@@ -155,16 +164,10 @@ export function ExternalChecks({ submission, checks: initialChecks }: { submissi
                 )}
                 {check.provider === "tavily" && check.results?.length ? (
                   <ul className="mb-0 mt-2 list-none space-y-1 p-0">
-                    {check.results.slice(0, 3).map((item, resultIndex) => {
+                    {check.results.map((item, resultIndex) => {
                       const match = bag(item);
                       const evidence = bag(match.evidence);
-                      const url = typeof evidence.url === "string"
-                        ? evidence.url
-                        : typeof match.url === "string"
-                          ? match.url
-                          : typeof match.source_id === "string" && match.source_id.startsWith("http")
-                            ? match.source_id
-                            : "";
+                      const url = safeSourceUrl(evidence.url ?? match.url ?? match.source_id);
                       const label = typeof evidence.title === "string"
                         ? evidence.title
                         : typeof match.title === "string" ? match.title : url;
