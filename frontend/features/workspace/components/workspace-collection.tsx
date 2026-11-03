@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { SimilarityResult, SubmissionRecord } from "@/lib/review-schemas";
 import { ReviewStatusSelect } from "./review-status-select";
-import { useWorkspaceResults, useWorkspaceSubmissions } from "../hooks/use-workspace-queries";
+import { useWorkspaceReports, useWorkspaceResults, useWorkspaceSubmissions } from "../hooks/use-workspace-queries";
 import type { WorkspaceView } from "../types/workspace";
 
 function dateLabel(value: string) {
@@ -30,7 +30,7 @@ function EvidenceRows({ results, names }: { results: SimilarityResult[]; names: 
   );
 }
 
-function DownloadReport({ submission, results }: { submission: SubmissionRecord; results: SimilarityResult[] }) {
+function DownloadReport({ submission }: { submission: SubmissionRecord }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -38,23 +38,7 @@ function DownloadReport({ submission, results }: { submission: SubmissionRecord;
     setBusy(true);
     setError("");
     try {
-      const related = results.filter((result) => result.submission_id === submission.id);
-      const response = await fetch("/api/reports", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          submissionId: submission.id,
-          title: submission.filename,
-          course: "",
-          kind: submission.content_type,
-          language: submission.language ?? null,
-          scores: related.slice(0, 100).map((result) => ({ method: result.method, score: result.score, source: result.source_id })),
-          reviewerStatus: related[0]?.review_status ?? "pending",
-          reviewerNote: related[0]?.review_note ?? null,
-          isExampleData: false,
-        }),
-        cache: "no-store",
-      });
+      const response = await fetch(`/api/reports?submission_id=${encodeURIComponent(submission.id)}`, { cache: "no-store" });
       if (!response.ok) {
         const body = await response.json().catch(() => null) as { error?: string } | null;
         throw new Error(body?.error ?? "Could not create the report.");
@@ -82,16 +66,18 @@ function DownloadReport({ submission, results }: { submission: SubmissionRecord;
 }
 
 export function WorkspaceCollection({ view }: { view: Exclude<WorkspaceView, "detect"> }) {
-  const submissionsQuery = useWorkspaceSubmissions();
-  const resultsQuery = useWorkspaceResults();
-  const loading = submissionsQuery.isPending || resultsQuery.isPending;
-  const error = submissionsQuery.error ?? resultsQuery.error;
+  const reportsView = view === "reports";
+  const submissionsQuery = useWorkspaceSubmissions(!reportsView);
+  const resultsQuery = useWorkspaceResults(!reportsView);
+  const reportsQuery = useWorkspaceReports(reportsView);
+  const loading = reportsView ? reportsQuery.isLoading : submissionsQuery.isLoading || resultsQuery.isLoading;
+  const error = reportsView ? reportsQuery.error : submissionsQuery.error ?? resultsQuery.error;
   const submissions = submissionsQuery.data ?? [];
   const results = resultsQuery.data ?? [];
   const names = new Map(submissions.map((item) => [item.id, item.filename]));
 
   if (loading) return <p className="py-10 text-sm text-workspace-muted-strong" role="status">Loading workspace records…</p>;
-  if (error) return <section className="max-w-xl py-10" role="alert"><h1 className="font-heading text-[28px] font-normal">Could not load records</h1><p className="text-sm leading-[22px] text-workspace-copy">{error.message}</p><button type="button" onClick={() => { void submissionsQuery.refetch(); void resultsQuery.refetch(); }} className="min-h-9 rounded-md border border-workspace-control px-3 text-sm hover:bg-workspace-hover focus-visible:outline-2 focus-visible:outline-workspace-focus">Try again</button></section>;
+  if (error) return <section className="max-w-xl py-10" role="alert"><h1 className="font-heading text-[28px] font-normal">Could not load {reportsView ? "reports" : "workspace records"}</h1><p className="text-sm leading-[22px] text-workspace-copy">{error.message}</p><button type="button" onClick={() => { if (reportsView) void reportsQuery.refetch(); else { void submissionsQuery.refetch(); void resultsQuery.refetch(); } }} className="min-h-9 rounded-md border border-workspace-control px-3 text-sm hover:bg-workspace-hover focus-visible:outline-2 focus-visible:outline-workspace-focus">Try again</button></section>;
 
   if (view === "history") {
     return (
@@ -125,9 +111,9 @@ export function WorkspaceCollection({ view }: { view: Exclude<WorkspaceView, "de
     <section className="max-w-3xl py-9 max-[800px]:py-7" aria-labelledby="collection-title">
       <p className="m-0 text-xs font-medium uppercase tracking-[0.04em] text-workspace-muted-strong">Reports</p>
       <h1 id="collection-title" className="mb-0 mt-3 font-heading text-[28px] font-normal leading-8 tracking-[-0.02em]">Review reports</h1>
-      {!submissions.length ? <p className="mb-0 mt-8 text-sm leading-[22px] text-workspace-muted-strong">A report is available after the first submission has been reviewed.</p> : (
+      {!(reportsQuery.data?.length ?? 0) ? <p className="mb-0 mt-8 text-sm leading-[22px] text-workspace-muted-strong">Reports will appear here after a submission is saved.</p> : (
         <ul className="m-0 mt-7 list-none divide-y divide-workspace-line border-y border-workspace-line p-0">
-          {submissions.map((submission) => <li key={submission.id} className="flex flex-wrap items-center justify-between gap-4 py-5"><div><h2 className="m-0 text-sm font-medium text-workspace-ink">{submission.filename}</h2><p className="mb-0 mt-1 text-xs text-workspace-muted-strong">{dateLabel(submission.created_at)} · {results.filter((result) => result.submission_id === submission.id).length} similarity results</p></div><DownloadReport submission={submission} results={results} /></li>)}
+          {reportsQuery.data?.map((report) => <li key={report.submission.id} className="flex flex-wrap items-center justify-between gap-4 py-5"><div><h2 className="m-0 text-sm font-medium text-workspace-ink">{report.submission.filename}</h2><p className="mb-0 mt-1 text-xs text-workspace-muted-strong">{dateLabel(report.submission.created_at)} · {report.results.length} similarity results</p></div><DownloadReport submission={report.submission} /></li>)}
         </ul>
       )}
     </section>

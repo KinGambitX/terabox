@@ -1,6 +1,7 @@
 import {
   resultListSchema,
   resultSchema,
+  reportsListSchema,
   submissionListSchema,
   uploadResponseSchema,
   type ExternalCheck,
@@ -57,6 +58,15 @@ export async function getResults(): Promise<SimilarityResult[]> {
   if (!response.ok) throw new Error(errorFrom(body, "Could not load review results."));
   const parsed = resultListSchema.safeParse(body);
   if (!parsed.success) throw new Error("The analysis service returned invalid result data.");
+  return parsed.data.items;
+}
+
+export async function getReports() {
+  const response = await fetch("/api/reports", { cache: "no-store" });
+  const body = await responseBody(response);
+  if (!response.ok) throw new Error(errorFrom(body, "Could not load reports."));
+  const parsed = reportsListSchema.safeParse(body);
+  if (!parsed.success) throw new Error("The analysis service returned invalid report data.");
   return parsed.data.items;
 }
 

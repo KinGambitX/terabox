@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconBell, IconMenu2 } from "@tabler/icons-react";
+import { IconMenu2 } from "@tabler/icons-react";
 import { BrandButton } from "@/components/ui/brand-button";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -47,14 +47,6 @@ export function WorkspaceScreen({ maxUploadMb }: { maxUploadMb: number }) {
                 </SheetContent>
               </Sheet>
               <span className="text-[13px] text-workspace-muted-strong">Workspace <span className="px-1.5 text-workspace-control">/</span><span className="text-workspace-ink">{workspace.view === "detect" ? "Detect" : workspace.view}</span></span>
-            </div>
-            <div className="flex items-center gap-1">
-              <details className="relative">
-                <summary aria-label="Notifications" className="grid size-9 cursor-pointer list-none place-items-center rounded-md text-workspace-muted-strong transition-colors duration-150 hover:bg-workspace-hover hover:text-workspace-ink focus-visible:outline-2 focus-visible:outline-workspace-focus [&::-webkit-details-marker]:hidden">
-                  <IconBell size={16} stroke={1.5} aria-hidden="true" />
-                </summary>
-                <p className="absolute right-0 z-20 mt-1 w-56 rounded-md border border-workspace-line bg-workspace-paper p-3 text-sm leading-[22px] text-workspace-copy">No new activity.</p>
-              </details>
             </div>
           </header>
 

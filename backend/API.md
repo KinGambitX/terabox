@@ -140,6 +140,13 @@ stored original file.
 
 ### Analysis and reports
 
+#### `GET /api/v1/reports` and `GET /api/v1/reports/{submission_id}`
+
+Requires API key. Returns report snapshots assembled from saved submission
+metadata and its current reviewer evidence. The collection route returns
+`{"items":[<report>, ...]}`; the detail route returns one report or `404`.
+Reports are generated from the canonical MongoDB records when requested.
+
 #### `POST /api/v1/analyses/{submission_id}`
 
 Requires API key. Re-runs internal document or same-language code comparisons.

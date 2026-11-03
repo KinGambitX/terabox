@@ -46,6 +46,15 @@ def test_health_ready_auth_and_submission_analysis_routes(tmp_path):
         second_id = second.json()["submission"]["id"]
         assert second.json()["results"]
 
+        reports = client.get("/api/v1/reports", headers=auth)
+        assert reports.status_code == 200
+        assert {item["submission"]["id"] for item in reports.json()["items"]} == {first_id, second_id}
+        report = client.get(f"/api/v1/reports/{second_id}", headers=auth)
+        assert report.status_code == 200
+        assert report.json()["submission"]["id"] == second_id
+        assert report.json()["results"]
+        assert client.get("/api/v1/reports/not-found", headers=auth).status_code == 404
+
         assert client.get("/api/v1/submissions", headers=auth).status_code == 200
         assert client.get(f"/api/v1/submissions/{second_id}", headers=auth).json()["id"] == second_id
         assert client.post(f"/api/v1/analyses/{second_id}", headers=auth).status_code == 200

@@ -106,17 +106,12 @@ export const reviewUpdateSchema = z.object({
   note: z.string().max(4000).nullable(),
 });
 
-export const reportInputSchema = z.object({
-  submissionId: z.string().min(1).max(120),
-  title: z.string().min(1).max(240),
-  course: z.string().max(240),
-  kind: z.enum(["document", "code"]),
-  language: z.string().max(80).nullable(),
-  scores: z.array(z.object({ method: z.string().max(120), score: z.number().min(0).max(1), source: z.string().max(500) })).max(100),
-  reviewerStatus: z.enum(["pending", "reviewed", "relevant", "dismissed"]),
-  reviewerNote: z.string().max(4000).nullable(),
-  isExampleData: z.boolean(),
+export const reportRecordSchema = z.object({
+  submission: submissionSchema,
+  results: z.array(resultSchema),
+  generated_at: z.string(),
 });
+export const reportsListSchema = z.object({ items: z.array(reportRecordSchema) });
 
 export const uploadToastSchema = z.object({ count: z.number().int().positive(), note: z.string().max(300).optional() });
 
@@ -124,3 +119,4 @@ export type SubmissionKind = z.infer<typeof submissionFieldsSchema>["kind"];
 export type SubmissionRecord = z.infer<typeof submissionSchema>;
 export type SimilarityResult = z.infer<typeof resultSchema>;
 export type ReviewStatus = z.infer<typeof reviewUpdateSchema>["status"];
+export type ReportRecord = z.infer<typeof reportRecordSchema>;
