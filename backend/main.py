@@ -89,6 +89,13 @@ def create_app(settings: Settings | None = None, repository: Repository | None =
             "text_length": len(row.get("extracted_text", "")),
         }
 
+    def report_record(row: dict) -> dict:
+        return {
+            "submission": public_submission(row),
+            "results": repo.list_results(submission_id=row["id"]),
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+        }
+
     @app.get("/healthz", tags=["system"])
     def healthz():
         return {"status": "ok", "service": "terabox-analysis"}
@@ -139,6 +146,17 @@ def create_app(settings: Settings | None = None, repository: Repository | None =
     @app.get("/api/v1/submissions", tags=["submissions"], dependencies=[Depends(require_api_key)])
     def list_submissions(content_type: str | None = Query(default=None, pattern="^(document|code)$")):
         return {"items": repo.list_submissions(content_type=content_type)}
+
+    @app.get("/api/v1/reports", tags=["reports"], dependencies=[Depends(require_api_key)])
+    def list_reports():
+        return {"items": [report_record(row) for row in repo.list_submissions()]}
+
+    @app.get("/api/v1/reports/{submission_id}", tags=["reports"], dependencies=[Depends(require_api_key)])
+    def get_report(submission_id: str):
+        row = repo.get_submission(submission_id)
+        if row is None:
+            raise HTTPException(status_code=404, detail="Submission not found")
+        return report_record(row)
 
     @app.get("/api/v1/submissions/{submission_id}", tags=["submissions"], dependencies=[Depends(require_api_key)])
     def get_submission(submission_id: str):

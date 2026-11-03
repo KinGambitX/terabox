@@ -55,13 +55,6 @@ export function WorkspaceScreen({ maxUploadMb }: { maxUploadMb: number }) {
                 </summary>
                 <p className="absolute right-0 z-20 mt-1 w-56 rounded-md border border-workspace-line bg-workspace-paper p-3 text-sm leading-[22px] text-workspace-copy">No new activity.</p>
               </details>
-              <details className="relative border-l border-workspace-line pl-2">
-                <summary aria-label="Preview account" className="grid size-9 cursor-pointer list-none place-items-center rounded-md text-sm font-medium text-workspace-ink hover:bg-workspace-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-workspace-focus [&::-webkit-details-marker]:hidden">AM</summary>
-                <div className="absolute right-0 z-20 mt-1 w-52 rounded-md border border-workspace-line bg-workspace-paper p-3 text-sm">
-                  <p className="m-0 font-medium">Preview account</p>
-                  <p className="mb-0 mt-1 text-xs leading-4 text-workspace-muted-strong">Reviewer profile</p>
-                </div>
-              </details>
             </div>
           </header>
 
