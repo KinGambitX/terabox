@@ -17,6 +17,7 @@ from web_search import search_candidates
 
 
 logger = logging.getLogger("terabox.pipeline")
+SEMANTIC_MATCH_THRESHOLD = 0.72
 
 
 class AnalysisPipeline:
@@ -45,11 +46,30 @@ class AnalysisPipeline:
         for source in comparables:
             if current["content_type"] == "document":
                 result = compare_text(current["extracted_text"], source["extracted_text"])
+                if not result["matched_passages"]:
+                    continue
             else:
                 result = compare_code(current["extracted_text"], source["extracted_text"], current["language"] or "unknown")
+                if not result["matched_token_blocks"]:
+                    continue
             output.append(self._result_row(current["id"], source["id"], "internal", result))
         self.repository.save_results(output)
+        self._log_similarity_results(output)
         return self.repository.list_results(submission_id=submission_id)
+
+    @staticmethod
+    def _log_similarity_results(rows: list[dict]) -> None:
+        for row in rows:
+            evidence = json.loads(row["evidence_json"])
+            logger.info("Similarity result: %s", json.dumps({
+                "submission_id": row["submission_id"],
+                "source_id": row["source_id"],
+                "source_type": row["source_type"],
+                "method": row["method"],
+                "score": row["score"],
+                "matched_passages": len(evidence.get("matched_passages", [])),
+                "matched_code_blocks": len(evidence.get("matched_token_blocks", [])),
+            }))
 
     def _semantic_results(self, current: dict, sources: list[dict], vector: list[float], model: str) -> list[dict]:
         rows = []
@@ -60,12 +80,18 @@ class AnalysisPipeline:
                 self.repository.save_embedding(source["id"], target, source_model)
                 self._persist_vector(source["id"], source, target, source_model)
             score = cosine_score(vector, target)
+            lexical = compare_text(current["extracted_text"], source["extracted_text"])
+            # Embedding proximity is only a candidate signal. Require matching
+            # text evidence before reporting it as possible copied material.
+            if score < SEMANTIC_MATCH_THRESHOLD or not lexical["matched_passages"]:
+                continue
             result = {
                 "method": "huggingface_embedding_cosine",
                 "model": model,
                 "score": round(score, 6),
                 "submission_excerpt": current["extracted_text"][:800],
                 "source_excerpt": source["extracted_text"][:800],
+                "matched_passages": lexical["matched_passages"],
             }
             rows.append(self._result_row(current["id"], source["id"], "internal", result))
         return rows
@@ -93,6 +119,8 @@ class AnalysisPipeline:
         rows = []
         for candidate in candidates:
             result = compare_text(submission["extracted_text"], candidate["content"])
+            if not result["matched_passages"]:
+                continue
             result.update({
                 "provider": "tavily",
                 "url": candidate["url"],
@@ -102,6 +130,7 @@ class AnalysisPipeline:
             })
             rows.append(self._result_row(submission_id, candidate["url"], "web", result))
         self.repository.save_results(rows)
+        self._log_similarity_results(rows)
         return self.repository.list_results(submission_id=submission_id)
 
     @staticmethod

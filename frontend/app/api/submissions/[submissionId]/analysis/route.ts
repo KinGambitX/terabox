@@ -1,5 +1,5 @@
 import { backendRequest, relayJson } from "@/lib/backend-api";
-import { analysisResponseSchema } from "@/features/workspace/schemas/workspace";
+import { analysisResponseSchema } from "@/lib/review-schemas";
 
 export async function POST(_: Request, { params }: { params: Promise<{ submissionId: string }> }) {
   const { submissionId } = await params;

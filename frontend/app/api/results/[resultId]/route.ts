@@ -1,5 +1,5 @@
 import { backendRequest, relayJson } from "@/lib/backend-api";
-import { resultSchema, reviewUpdateSchema } from "@/features/workspace/schemas/workspace";
+import { resultSchema, reviewUpdateSchema } from "@/lib/review-schemas";
 
 export async function GET(_: Request, { params }: { params: Promise<{ resultId: string }> }) {
   const { resultId } = await params;

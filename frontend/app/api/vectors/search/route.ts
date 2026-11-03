@@ -1,5 +1,5 @@
 import { backendRequest, relayJson } from "@/lib/backend-api";
-import { vectorSearchRequestSchema, vectorSearchResponseSchema } from "@/features/workspace/schemas/workspace";
+import { vectorSearchRequestSchema, vectorSearchResponseSchema } from "@/lib/review-schemas";
 
 export async function POST(request: Request) {
   const input = vectorSearchRequestSchema.safeParse(await request.json().catch(() => null));

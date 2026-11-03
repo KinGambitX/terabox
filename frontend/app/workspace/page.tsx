@@ -1,6 +1,6 @@
-import { SourceComposerScreen } from "@/features/workspace/components/source-composer-screen";
+import { WorkspaceScreen } from "@/features/workspace/components/workspace-screen";
 import { getMaxUploadMb } from "@/lib/backend-api";
 
 export default function WorkspacePage() {
-  return <SourceComposerScreen maxUploadMb={getMaxUploadMb()} />;
+  return <WorkspaceScreen maxUploadMb={getMaxUploadMb()} />;
 }

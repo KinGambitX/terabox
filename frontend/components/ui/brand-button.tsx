@@ -8,7 +8,7 @@ type BrandButtonProps = Omit<React.ComponentProps<typeof Button>, "variant"> & {
 
 function BrandButton({ className, tone = "radial", ...props }: BrandButtonProps) {
   const appearance = tone === "ink"
-    ? "rounded-md !bg-workspace-action !text-white !bg-none hover:!bg-workspace-action-hover"
+    ? "h-10 rounded-md !bg-workspace-action !text-white !bg-none hover:!bg-workspace-action-hover active:translate-y-px"
     : "rounded-full bg-[radial-gradient(130%_120%_at_50%_0%,var(--brand-button-top)_0%,var(--brand-button-bottom)_100%)] text-brand-button-ink hover:bg-[radial-gradient(130%_120%_at_50%_0%,var(--brand-button-top)_0%,var(--brand-button-hover)_100%)]";
 
   return (

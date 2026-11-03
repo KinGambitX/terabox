@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 import json
+import logging
+import math
 from typing import Any
 
 from pymongo import ASCENDING, DESCENDING, MongoClient
+
+
+logger = logging.getLogger("terabox.repository")
 
 
 class Repository:
@@ -84,7 +89,22 @@ class Repository:
     def list_results(self, *, submission_id: str | None = None) -> list[dict[str, Any]]:
         query = {"submission_id": submission_id} if submission_id else {}
         rows = self.results.find(query).sort([("score", DESCENDING), ("created_at", DESCENDING)])
-        return [self._decode_result(row) for row in rows]
+        valid = []
+        for row in rows:
+            result = self._decode_result(row)
+            score = result.get("score")
+            evidence = result.get("evidence")
+            evidence = evidence if isinstance(evidence, dict) else {}
+            has_matches = bool(evidence.get("matched_passages") or evidence.get("matched_token_blocks"))
+            if isinstance(score, (int, float)) and math.isfinite(score) and 0 <= score <= 1 and has_matches:
+                valid.append(result)
+                continue
+            logger.warning(
+                "Discarding stored result without valid similarity evidence result_id=%s method=%s",
+                result.get("id"), result.get("method"),
+            )
+            self.results.delete_one({"id": result.get("id")})
+        return valid
 
     def get_result(self, result_id: str) -> dict[str, Any] | None:
         row = self.results.find_one({"id": result_id})

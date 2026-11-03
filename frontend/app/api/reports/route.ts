@@ -1,4 +1,4 @@
-import { reportInputSchema } from "@/features/workspace/schemas/workspace";
+import { reportInputSchema } from "@/lib/review-schemas";
 
 export async function POST(request: Request) {
   const input = reportInputSchema.safeParse(await request.json().catch(() => null));

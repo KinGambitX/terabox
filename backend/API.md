@@ -12,14 +12,17 @@ Run the backend from `backend/`:
 .venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
-Set `BACKEND_API_URL` and `BACKEND_API_KEY` in the Next.js server environment.
-Use server-side code (a Route Handler or Server Action) to call the backend and
-forward the API key. Do not expose `BACKEND_API_KEY` with a `NEXT_PUBLIC_` name.
+Set `BACKEND_API_URL` in the Next.js server environment. In production, also
+set `BACKEND_API_KEY` to the same value as the backend's `API_KEY`. API keys are
+optional in development. Use server-side code (a Route Handler or Server Action)
+to call the backend; do not expose `BACKEND_API_KEY` with a `NEXT_PUBLIC_` name.
 
 ```ts
 const response = await fetch(`${process.env.BACKEND_API_URL}/api/v1/submissions`, {
   method: "POST",
-  headers: { "X-API-Key": process.env.BACKEND_API_KEY! },
+  headers: process.env.BACKEND_API_KEY
+    ? { "X-API-Key": process.env.BACKEND_API_KEY }
+    : {},
   body: formData, // FormData with a `file` field; do not set Content-Type manually
   cache: "no-store",
 });
@@ -28,14 +31,15 @@ if (!response.ok) throw new Error(`Backend returned ${response.status}`);
 const report = await response.json();
 ```
 
-Local base URL: `http://127.0.0.1:8000`. Every route below, except
-`GET /healthz`, requires `X-API-Key: <API_KEY>`.
+Local base URL: `http://127.0.0.1:8000`. Development requests may omit
+`X-API-Key`. Production requests require `X-API-Key: <API_KEY>` on every route
+except `GET /healthz`.
 
 ## Data flow and storage
 
 ```mermaid
 flowchart LR
-  UI[Next.js server] -->|HTTP + X-API-Key| API[FastAPI]
+  UI[Next.js server] -->|HTTP + optional X-API-Key| API[FastAPI]
   API -->|metadata, extracted text, reports, reviews| DB[(MongoDB Atlas)]
   API -->|original upload| Files[UPLOAD_DIR]
   API -->|semantic vectors| Q[(Qdrant)]
@@ -177,12 +181,36 @@ MongoDB.
 {"result_id":"<uuid>","model":"<model>","generated":true,"text":"<evidence-grounded explanation>"}
 ```
 
+Each upload runs every enabled provider for its type concurrently. Documents
+run Tavily, Sapling, and PlagiarismCheck.org; code runs the workspace
+token matcher and Dolos. Upload responses include an `external_checks` list.
+AI-likelihood and source-similarity scores are shown as separate measures.
+Provider failures do not prevent the submission or other checks from completing.
+
 #### `POST /api/v1/analyses/{submission_id}/web-search`
 
 Requires API key; no request body. Requires `ALLOW_EXTERNAL_SEARCH=true`,
 `WEB_SEARCH_PROVIDER=tavily`, and `TAVILY_API_KEY`. Sends up to 400 characters
 from the submission to Tavily; saves candidate URLs, excerpts, and comparisons.
 Returns `{"submission_id":"<uuid>","results":[...]}`.
+
+#### `POST /api/v1/submissions/{submission_id}/external-checks`
+
+Reruns checks for an existing submission. For documents it calls all configured
+text providers concurrently. For code it submits a ZIP containing the
+submission and up to three prior same-language code submissions to Dolos.
+Provider keys and opt-in flags are optional. Unconfigured providers return
+`status: not_configured`; provider failures do not prevent the other checks.
+PlagiarismCheck.org returns a check ID that can be polled with
+`GET /api/v1/external-checks/plagiarismcheck/{check_id}`. Dolos returns a report
+ID and shareable report URL; poll its status with
+`GET /api/v1/external-checks/dolos/{report_id}`.
+
+Set `ALLOW_EXTERNAL_DETECTORS=true` with `SAPLING_API_KEY` or
+`PLAGIARISMCHECK_API_KEY` to enable document checks. Set
+`ALLOW_EXTERNAL_CODE_CHECK=true` to enable Dolos. This sends the submitted text
+or code, and for Dolos up to three comparison files, to those providers.
+Dolos datasets larger than 9 MB are skipped to stay below the public API's 10 MB limit.
 
 #### `POST /api/v1/agent/run`
 

@@ -1,5 +1,5 @@
 import { backendRequest, relayJson } from "@/lib/backend-api";
-import { readinessResponseSchema } from "@/features/workspace/schemas/workspace";
+import { readinessResponseSchema } from "@/lib/review-schemas";
 
 export async function GET() {
   try {

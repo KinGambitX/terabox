@@ -1,19 +1,16 @@
 {
  "version": 1,
  "kind": "app",
- "at": "2026-11-01T07:42:55.342Z",
- "seed": 1843552575,
+ "at": "2026-11-03T07:05:51.496Z",
+ "seed": 457040495,
  "input": {
-  "kind": "workspace",
-  "brief": "SourceLens reviewers inspect document and source-code similarity evidence, manage candidate submissions, and make human review decisions",
+  "kind": "builder",
+  "brief": "SourceLens is an academic document and source code similarity review tool. Reviewers submit text, code or files, optionally compare another source, and inspect evidence. The workspace is UI preview only with no live analysis. Use the supplied mountain photograph in a soft editorial crop.",
   "theme": "light",
   "screens": [
-   "overview",
-   "list",
-   "detail"
+   "overview"
   ],
   "keep": [
-   "palette",
    "type"
   ],
   "style": "achromatic-ledger"
@@ -148,14 +145,6 @@
  "screens": [
   {
    "name": "overview",
-   "pattern": null
-  },
-  {
-   "name": "list",
-   "pattern": null
-  },
-  {
-   "name": "detail",
    "pattern": null
   }
  ]

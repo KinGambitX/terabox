@@ -72,6 +72,49 @@ def test_health_ready_auth_and_submission_analysis_routes(tmp_path):
         assert client.get("/api/v1/results/no-such-result", headers=auth).status_code == 404
 
 
+def test_development_api_allows_requests_without_api_key(tmp_path):
+    settings = Settings(
+        app_env="development",
+        api_key="development-only-key",
+        mongodb_uri="mongodb://unit.test",
+        mongodb_database="terabox_test",
+        upload_dir=tmp_path / "uploads",
+    )
+    repository = make_test_repository(settings)
+    client = TestClient(create_app(settings, repository=repository))
+    with client:
+        assert client.get("/readyz").status_code == 200
+        assert client.get("/api/v1/submissions").json() == {"items": []}
+
+
+def test_upload_searches_public_sources_when_tavily_is_enabled(tmp_path, monkeypatch):
+    import pipeline
+
+    monkeypatch.setattr(pipeline, "search_candidates", lambda query, settings: [{
+        "url": "https://en.wikipedia.org/wiki/Renewable_energy",
+        "title": "Renewable energy - Wikipedia",
+        "content": "Renewable energy storage balances electricity supply and demand. "
+                   "Battery systems store power during periods of high generation.",
+        "provider_score": 0.9,
+    }])
+    settings = Settings(
+        app_env="test", api_key=API_KEY, mongodb_uri="mongodb://unit.test",
+        mongodb_database="terabox_test", upload_dir=tmp_path / "uploads",
+        allow_external_search=True, web_search_provider="tavily", tavily_api_key="fake-key",
+    )
+    settings.upload_dir.mkdir(parents=True, exist_ok=True)
+    client = TestClient(create_app(settings, repository=make_test_repository(settings)))
+    response = client.post(
+        "/api/v1/submissions", headers={"X-API-Key": API_KEY},
+        files={"file": ("wiki.txt", b"Renewable energy storage balances electricity supply and demand. "
+                b"Battery systems store power during periods of high generation.")},
+    )
+    assert response.status_code == 200, response.text
+    web_results = [item for item in response.json()["results"] if item["source_type"] == "web"]
+    assert web_results
+    assert web_results[0]["evidence"]["url"] == "https://en.wikipedia.org/wiki/Renewable_energy"
+
+
 def test_upload_validation_and_code_comparison(tmp_path):
     client, auth = make_client(tmp_path)
     with client:

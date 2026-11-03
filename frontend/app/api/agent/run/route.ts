@@ -1,5 +1,5 @@
 import { backendRequest, relayJson } from "@/lib/backend-api";
-import { agentRequestSchema, agentResponseSchema } from "@/features/workspace/schemas/workspace";
+import { agentRequestSchema, agentResponseSchema } from "@/lib/review-schemas";
 
 export async function POST(request: Request) {
   const input = agentRequestSchema.safeParse(await request.json().catch(() => null));

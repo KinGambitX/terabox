@@ -49,6 +49,11 @@ class Settings:
     tavily_api_key: str | None = None
     allow_external_search: bool = False
     web_search_max_results: int = 5
+    allow_external_detectors: bool = False
+    sapling_api_key: str | None = None
+    plagiarismcheck_api_key: str | None = None
+    allow_external_code_check: bool = False
+    dolos_api_url: str = "https://dolos.ugent.be/api"
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -82,6 +87,11 @@ class Settings:
                 tavily_api_key=os.getenv("TAVILY_API_KEY") or None,
                 allow_external_search=_bool("ALLOW_EXTERNAL_SEARCH", False),
                 web_search_max_results=int(os.getenv("WEB_SEARCH_MAX_RESULTS", "5")),
+                allow_external_detectors=_bool("ALLOW_EXTERNAL_DETECTORS", False),
+                sapling_api_key=os.getenv("SAPLING_API_KEY") or None,
+                plagiarismcheck_api_key=os.getenv("PLAGIARISMCHECK_API_KEY") or None,
+                allow_external_code_check=_bool("ALLOW_EXTERNAL_CODE_CHECK", False),
+                dolos_api_url=os.getenv("DOLOS_API_URL", "https://dolos.ugent.be/api").rstrip("/"),
             )
         except ValueError as exc:
             raise ValueError(f"Invalid environment setting: {exc}") from exc

@@ -1,0 +1,54 @@
+- generic [ref=f1e2]:
+  - link "Skip to content" [ref=f1e3] [cursor=pointer]:
+    - /url: "#workspace-main"
+  - generic [ref=f1e4]:
+    - complementary "SourceLens workspace navigation" [ref=f1e5]:
+      - generic [ref=f1e6]: SourceLens
+      - paragraph [ref=f1e18]: Workspace
+      - navigation "Workspace" [ref=f1e19]:
+        - button "Detect" [ref=f1e20] [cursor=pointer]
+        - button "History" [ref=f1e26] [cursor=pointer]
+        - button "Comparisons" [ref=f1e30] [cursor=pointer]
+        - button "Reports" [ref=f1e35] [cursor=pointer]
+      - paragraph [ref=f1e39]: Uploads go to the configured review service.
+    - generic [ref=f1e40]:
+      - banner [ref=f1e41]:
+        - generic [ref=f1e42]: Workspace /Detect
+        - generic [ref=f1e44]:
+          - group [ref=f1e45]:
+            - generic "Notifications" [ref=f1e46] [cursor=pointer]
+          - group [ref=f1e50]:
+            - generic "Preview account" [ref=f1e51] [cursor=pointer]: AM
+      - main [ref=f1e52]:
+        - generic [ref=f1e53]:
+          - generic [ref=f1e54]:
+            - paragraph [ref=f1e55]: Similarity review
+            - heading "Inspect a submission." [level=1] [ref=f1e56]
+            - paragraph [ref=f1e57]: Review text, source code, or a document against another source.
+          - region "Prepare a similarity review" [ref=f1e58]:
+            - tablist "Input type" [ref=f1e59]:
+              - tab "text" [selected] [ref=f1e60] [cursor=pointer]
+              - tab "code" [ref=f1e61] [cursor=pointer]
+              - tab "file" [ref=f1e62] [cursor=pointer]
+            - tabpanel "text" [ref=f1e63]:
+              - generic [ref=f1e64]:
+                - generic [ref=f1e65]:
+                  - generic [ref=f1e66]: Text to review
+                  - textbox "Text to review" [ref=f1e67]:
+                    - /placeholder: Paste your text here…
+                  - paragraph [ref=f1e68]:
+                    - generic [ref=f1e69]: Paste the text you want to review.
+                    - generic [ref=f1e70]: 0 / 50,000
+                - generic [ref=f1e71] [cursor=pointer]:
+                  - checkbox "Compare with another source" [ref=f1e72]
+                  - generic [ref=f1e73]: Compare with another source
+              - generic [ref=f1e74]:
+                - generic [ref=f1e75]: Review service
+                - button "Run detection" [ref=f1e76] [cursor=pointer]:
+                  - text: Run detection
+                  - generic [aria-hidden] [ref=f1e77]: →
+              - paragraph [ref=f1e78]: 50,000 characters · 20 MB per file · 10 files per source
+        - complementary "Evidence ledger" [ref=f1e79]:
+          - paragraph [ref=f1e80]: Evidence ledger
+          - heading "Review evidence" [level=2] [ref=f1e81]
+          - paragraph [ref=f1e86]: Evidence and source matches will appear here after a connected review.

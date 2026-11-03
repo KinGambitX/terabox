@@ -16,6 +16,11 @@ from pydantic import BaseModel, Field
 
 from documents import SUPPORTED_TYPES, extract_content
 from explanations import explain
+from external_tools import (
+    get_dolos_report,
+    get_plagiarismcheck_report,
+    run_all_checks,
+)
 from pipeline import AnalysisPipeline
 from repository import Repository
 from semantic import embed_text
@@ -53,7 +58,7 @@ def create_app(settings: Settings | None = None, repository: Repository | None =
     app = FastAPI(
         title="TeraBox Analysis API",
         version="1.0.0",
-        description="Authenticated document and source-code similarity analysis service.",
+        description="Document and source-code similarity analysis service with production API-key protection.",
         docs_url=None if config.app_env == "production" else "/docs",
         redoc_url=None if config.app_env == "production" else "/redoc",
         openapi_url=None if config.app_env == "production" else "/openapi.json",
@@ -72,6 +77,8 @@ def create_app(settings: Settings | None = None, repository: Repository | None =
     )
 
     def require_api_key(x_api_key: str | None = Header(default=None, alias="X-API-Key")) -> None:
+        if config.app_env == "development" and not x_api_key:
+            return
         if not x_api_key or not hmac.compare_digest(x_api_key, config.api_key):
             raise HTTPException(status_code=401, detail="Valid X-API-Key header required")
 
@@ -120,11 +127,14 @@ def create_app(settings: Settings | None = None, repository: Repository | None =
                 "language": language, "extracted_text": extracted, "file_path": str(destination),
                 "created_at": datetime.now(timezone.utc).isoformat(),
             })
-            results = app.state.pipeline.analyze_submission(submission_id)
+            app.state.pipeline.analyze_submission(submission_id)
+            external_checks = run_all_checks(repo.get_submission(submission_id), repo, app.state.pipeline, config)
+            results = repo.list_results(submission_id=submission_id)
         except Exception as exc:
             logger.exception("Submission pipeline failed for %s", submission_id)
             raise HTTPException(status_code=502, detail="Submission saved but analysis pipeline failed") from exc
-        return {"submission": public_submission(repo.get_submission(submission_id)), "results": results}
+        return {"submission": public_submission(repo.get_submission(submission_id)), "results": results,
+                "external_checks": external_checks}
 
     @app.get("/api/v1/submissions", tags=["submissions"], dependencies=[Depends(require_api_key)])
     def list_submissions(content_type: str | None = Query(default=None, pattern="^(document|code)$")):
@@ -205,6 +215,34 @@ def create_app(settings: Settings | None = None, repository: Repository | None =
             logger.exception("Web search provider failed")
             raise HTTPException(status_code=502, detail="Web search provider failed") from exc
         return {"submission_id": submission_id, "results": results}
+
+    @app.post("/api/v1/submissions/{submission_id}/external-checks", tags=["external tools"], dependencies=[Depends(require_api_key)])
+    def run_external_checks(submission_id: str):
+        submission = repo.get_submission(submission_id)
+        if submission is None:
+            raise HTTPException(status_code=404, detail="Submission not found")
+        checks = run_all_checks(submission, repo, app.state.pipeline, config)
+        return {"submission_id": submission_id, "checks": checks}
+
+    @app.get("/api/v1/external-checks/plagiarismcheck/{check_id}", tags=["external tools"], dependencies=[Depends(require_api_key)])
+    def plagiarismcheck_report(check_id: int):
+        try:
+            return get_plagiarismcheck_report(str(check_id), config)
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except Exception as exc:
+            logger.exception("PlagiarismCheck report request failed")
+            raise HTTPException(status_code=502, detail="PlagiarismCheck report request failed") from exc
+
+    @app.get("/api/v1/external-checks/dolos/{report_id}", tags=["external tools"], dependencies=[Depends(require_api_key)])
+    def dolos_report(report_id: str):
+        try:
+            return get_dolos_report(report_id, config)
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except Exception as exc:
+            logger.exception("Dolos report request failed")
+            raise HTTPException(status_code=502, detail="Dolos report request failed") from exc
 
     @app.post("/api/v1/vectors/search", tags=["vectors"], dependencies=[Depends(require_api_key)])
     def vector_search(body: VectorSearchRequest):

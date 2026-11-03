@@ -1,5 +1,5 @@
 import { backendPublicRequest, relayJson } from "@/lib/backend-api";
-import { healthResponseSchema } from "@/features/workspace/schemas/workspace";
+import { healthResponseSchema } from "@/lib/review-schemas";
 
 export async function GET() {
   try {

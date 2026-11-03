@@ -2,7 +2,7 @@ import "server-only";
 
 export type BackendConfig = {
   baseUrl: URL;
-  apiKey: string;
+  apiKey: string | null;
 };
 
 export function getBackendBaseUrl(): URL | null {
@@ -19,7 +19,8 @@ export function getBackendBaseUrl(): URL | null {
 export function getBackendConfig(): BackendConfig | null {
   const apiKey = process.env.BACKEND_API_KEY;
   const baseUrl = getBackendBaseUrl();
-  return baseUrl && apiKey ? { baseUrl, apiKey } : null;
+  if (!baseUrl || (process.env.NODE_ENV === "production" && !apiKey)) return null;
+  return { baseUrl, apiKey: apiKey || null };
 }
 
 export function getMaxUploadMb() {
@@ -37,7 +38,7 @@ export async function backendRequest(path: string, init: RequestInit = {}) {
 
   const url = new URL(path.replace(/^\//, ""), `${config.baseUrl.href.replace(/\/$/, "")}/`);
   const headers = new Headers(init.headers);
-  headers.set("X-API-Key", config.apiKey);
+  if (config.apiKey) headers.set("X-API-Key", config.apiKey);
   headers.set("Accept", "application/json");
 
   return fetch(url, {

@@ -1,5 +1,5 @@
 import { backendRequest, relayJson } from "@/lib/backend-api";
-import { resultListSchema } from "@/features/workspace/schemas/workspace";
+import { resultListSchema } from "@/lib/review-schemas";
 
 export async function GET(request: Request) {
   const submissionId = new URL(request.url).searchParams.get("submission_id");

@@ -1,4 +1,5 @@
 import type { SVGProps } from "react";
+import { cn } from "@/lib/utils";
 
 type SiftMascotProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -45,7 +46,7 @@ export function SourceLensLogo({
   className = "",
 }: SourceLensLogoProps) {
   return (
-    <span className={`inline-flex items-center gap-2 text-ink ${className}`}>
+    <span className={cn("inline-flex items-center gap-2 text-ink", className)}>
       <SiftMascot size={size} />
       {showWordmark && (
         <span className="text-[15px] font-semibold tracking-[-0.035em]">

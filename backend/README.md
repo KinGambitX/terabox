@@ -48,12 +48,15 @@ curl -H 'X-API-Key: your-local-key' -H 'Content-Type: application/json' \
 |---|---|---|
 | GET | `/healthz` | Liveness check; no key required |
 | GET | `/readyz` | Authenticated readiness/database check |
-| POST | `/api/v1/submissions` | Validate, save, extract and analyze a file |
+| POST | `/api/v1/submissions` | Save, analyze, and run all enabled type-matched providers in parallel |
 | GET | `/api/v1/submissions` | List metadata; optional `content_type=document|code` |
 | GET | `/api/v1/submissions/{id}` | Get submission metadata |
 | DELETE | `/api/v1/submissions/{id}` | Delete source file and associated results |
 | POST | `/api/v1/analyses/{id}` | Re-run internal comparisons |
 | POST | `/api/v1/analyses/{id}/web-search` | Search public candidates and compare provider excerpts |
+| POST | `/api/v1/submissions/{id}/external-checks` | Rerun configured text/code provider checks |
+| GET | `/api/v1/external-checks/plagiarismcheck/{id}` | Poll a PlagiarismCheck scan |
+| GET | `/api/v1/external-checks/dolos/{id}` | Poll a Dolos report |
 | POST | `/api/v1/agent/run` | Run the PydanticAI coordinator with bounded tools |
 | GET | `/api/v1/results` | List results; optional `submission_id` |
 | GET | `/api/v1/results/{id}` | Get one result and evidence |
@@ -93,7 +96,7 @@ platform's secret manager instead.
 - Qdrant is the only supported vector database. `VECTOR_STORE=qdrant` enables
   it; set `VECTOR_STORE=none` to disable vector persistence. Configure it with
   `QDRANT_URL`, optional `QDRANT_API_KEY`, and `QDRANT_COLLECTION`.
-- Public web search runs only when `ALLOW_EXTERNAL_SEARCH=true`,
+- Document uploads automatically run public web search only when `ALLOW_EXTERNAL_SEARCH=true`,
   `WEB_SEARCH_PROVIDER=tavily`, and `TAVILY_API_KEY` are configured. It sends a
   short excerpt of the submission to Tavily and stores provider excerpts/URLs,
   not a full web crawl.

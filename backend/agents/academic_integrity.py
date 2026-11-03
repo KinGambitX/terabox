@@ -6,6 +6,7 @@ from pydantic_ai.capabilities import Caching
 
 from settings import Settings
 from tools.retrieval import search_public_sources, search_related_submissions
+from tools.external import run_external_provider_checks
 from tools.submissions import inspect_submission, run_similarity_analysis
 
 
@@ -18,12 +19,13 @@ class AgentReport(BaseModel):
 
 INSTRUCTIONS = """You coordinate evidence review for an academic similarity system.
 Use tools to retrieve stored facts and deterministic comparison results; never
-invent scores, sources, or excerpts. Similarity is not proof of plagiarism.
+invent scores, sources, or excerpts. The provider-check tool runs every enabled
+provider for the active submission concurrently. Similarity is not proof of plagiarism.
 Never decide misconduct, infer intent, or change a review status. Keep the
 reviewer as the decision-maker. Use Qdrant retrieval when a user asks about
-related submissions. Search the public web only when the user explicitly asks
-for web sources; that operation may send a short submission excerpt to an
-external provider. State when a tool is unavailable or returns no evidence.
+related submissions. The upload flow already searches public sources when
+Tavily is configured; rerun provider checks only when requested. State when a
+tool is unavailable or returns no evidence.
 Return a concise report with the IDs of results that support it."""
 
 
@@ -40,6 +42,7 @@ def build_agent(settings: Settings, model: str | None = None) -> Agent:
             Tool(run_similarity_analysis),
             Tool(search_related_submissions),
             Tool(search_public_sources),
+            Tool(run_external_provider_checks),
         ],
     )
 

@@ -1,5 +1,5 @@
 import { backendRequest, relayJson } from "@/lib/backend-api";
-import { deleteSubmissionResponseSchema, submissionSchema } from "@/features/workspace/schemas/workspace";
+import { deleteSubmissionResponseSchema, submissionSchema } from "@/lib/review-schemas";
 
 export async function GET(_: Request, { params }: { params: Promise<{ submissionId: string }> }) {
   const { submissionId } = await params;
