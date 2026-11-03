@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { IconBell } from "@tabler/icons-react";
 import { BrandButton } from "@/components/ui/brand-button";
 import { AnalysisPanel } from "@/features/workspace/components/analysis-panel";
 import { ComparisonToggle } from "@/features/workspace/components/comparison-toggle";
@@ -54,7 +53,7 @@ export function HeroPowerSkeleton({ mode }: { mode: HeroMode }) {
       data-ui="hero-workspace-preview"
       className="h-[min(720px,80vh)] overflow-hidden rounded-[22px] border border-workspace-border bg-workspace-ground text-left text-workspace-ink shadow-[0_24px_80px_rgba(22,24,29,0.08)]"
     >
-      <div className="flex h-full min-h-0 [&_aside]:!h-full [&_aside]:!max-h-full [&_aside]:overflow-y-auto [&_[data-ui=analysis-panel]]:!static [&_[data-ui=analysis-panel]]:!min-h-0 [&_[data-ui=analysis-panel]]:overflow-y-auto">
+      <div className="[&_*]:[scrollbar-width:none] [&_*::-webkit-scrollbar]:hidden flex h-full min-h-0 [&_aside]:!h-full [&_aside]:!max-h-full [&_aside]:overflow-y-auto [&_[data-ui=analysis-panel]]:!static [&_[data-ui=analysis-panel]]:!min-h-0 [&_[data-ui=analysis-panel]]:overflow-y-auto">
         <WorkspaceSidebar active="detect" onNavigate={() => {}} />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           <header className="flex h-14 shrink-0 items-center justify-between border-b border-workspace-line px-5 sm:px-8">
@@ -63,14 +62,6 @@ export function HeroPowerSkeleton({ mode }: { mode: HeroMode }) {
               <span className="px-1.5 text-workspace-control">/</span>
               <span className="text-workspace-ink">Detect</span>
             </span>
-            <div className="flex items-center gap-1">
-              <span className="grid size-9 place-items-center rounded-md text-workspace-muted-strong">
-                <IconBell size={16} stroke={1.5} aria-hidden />
-              </span>
-              <span className="grid size-9 place-items-center rounded-md border-l border-workspace-line pl-2 text-sm font-medium text-workspace-ink">
-                AM
-              </span>
-            </div>
           </header>
 
           <div className="grid min-h-0 flex-1 grid-cols-1 overflow-y-auto lg:grid-cols-[minmax(0,1.5fr)_minmax(17rem,1fr)]">

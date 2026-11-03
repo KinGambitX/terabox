@@ -35,6 +35,7 @@ export function useWorkspaceState(maxUploadMb: number) {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["workspace", "submissions"] }),
         queryClient.invalidateQueries({ queryKey: ["workspace", "results"] }),
+        queryClient.invalidateQueries({ queryKey: ["workspace", "reports"] }),
       ]);
     },
     onError: (error) => setRunError(error instanceof Error ? error.message : "The review could not be completed."),

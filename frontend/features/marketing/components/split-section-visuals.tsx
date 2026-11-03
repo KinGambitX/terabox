@@ -98,9 +98,6 @@ export function DecisionVisual() {
       <div className="mt-4 sm:absolute sm:bottom-8 sm:right-6 sm:mt-0 sm:w-[250px]">
         <div className="rounded-2xl border border-workspace-border bg-white p-3.5 shadow-[0_12px_32px_rgba(22,24,29,0.1)]">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-workspace-action text-[10px] font-semibold text-white">
-              AM
-            </span>
             <div>
               <p className="text-[11px] font-semibold text-workspace-ink">Reviewer note</p>
               <p className="text-[10px] text-workspace-muted-strong">Sample · relevant</p>

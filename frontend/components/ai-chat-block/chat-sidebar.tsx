@@ -215,7 +215,6 @@ export default function ChatSidebar({
           </span>
           <span className={cn('min-w-0 flex-1', desktopHidden && 'md:hidden')}>
             <span className="text-foreground block truncate text-xs font-medium">{userName}</span>
-            <span className="text-muted mt-0.5 block truncate text-[10px]">Preview account</span>
           </span>
         </div>
       </aside>
